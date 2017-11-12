@@ -1,0 +1,30 @@
+body {
+  font-family: 'Asap',Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  background: #fff;
+  color: black;
+  margin: 20px;
+}
+
+nav ul {
+  display: flex;
+  justify-content: space-between;
+  list-style: none;
+  padding: 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+
+  span {
+    padding-left: 15px;
+  }
+
+  a {
+    text-decoration: none;
+    color: white;
+  }
+}
+
+.control {
+  display: none;
+}
