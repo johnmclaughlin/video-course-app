@@ -7,22 +7,36 @@ body {
   margin: 20px;
 }
 
-nav ul {
+nav {
+  width: 25%;
+  background: orangered;
+
+    ul {
+      display: flex;
+      justify-content: space-between;
+      list-style: none;
+      padding: 0;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+
+    span {
+      padding-left: 15px;
+    }
+
+    a {
+      text-decoration: none;
+      color: white;
+    }
+  }
+}
+
+.container {
   display: flex;
-  justify-content: space-between;
-  list-style: none;
-  padding: 0;
-  text-transform: uppercase;
-  letter-spacing: 2px;
+}
 
-  span {
-    padding-left: 15px;
-  }
-
-  a {
-    text-decoration: none;
-    color: white;
-  }
+.content {
+  width: 75%;
+  background: darkorange;
 }
 
 .control {

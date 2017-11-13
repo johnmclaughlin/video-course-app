@@ -1,7 +1,15 @@
 import React, { Component } from 'react';
 import firebase, { auth, provider } from './firebase.js';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import ListExampleSimple from './ListExampleSimple';
+import ProgramMenu from './ProgramMenu';
+import Content from './Content';
+
+const muiTheme = getMuiTheme({
+  palette: {
+    // accent1Color: deepOrange500,
+  },
+});
 
 class App extends Component {
   constructor(props) {
@@ -10,6 +18,13 @@ class App extends Component {
       currentItem: '',
       username: '',
       lessons: [],
+      module: [{
+        title: "This default title",
+        subtitle: "This is the default subtitle",
+        ref: "This is the module reference",
+        description: "This is the default description",
+        videoRef: "This is the default video reference"
+      }],
       user: null
     }
     this.handleChange = this.handleChange.bind(this);
@@ -82,12 +97,16 @@ class App extends Component {
   
   render() {
     return (
+      <MuiThemeProvider muiTheme={muiTheme}>
       <div className='app'>
         <header>
           <div className="wrapper">
             <h1>How to Lead Yourself to a Fulfilling Career</h1>
             {this.state.user ?
-              <button onClick={this.logout}>Logout</button>                
+              <div>
+                <h3>{this.state.user.displayName}</h3>
+                <button onClick={this.logout}>Logout</button> 
+              </div>               
             :
               <button onClick={this.login}>Log In</button>              
             }
@@ -95,10 +114,7 @@ class App extends Component {
         </header>
         {this.state.user ?
           <div>
-            <div className='user-profile'>
-              <h3>{this.state.user.displayName}</h3>
-              {/* <img src={this.state.user.photoURL} /> */}
-            </div>
+           {/* Move this block into access control */}
           </div>
         :
           <div className='wrapper'>
@@ -106,26 +122,21 @@ class App extends Component {
           </div>
         } 
         <div className='container'>
-          <section className='add-item control'>
-                <form onSubmit={this.handleSubmit}>
-                  <input type="text" name="username" placeholder="What's your name?" onChange={this.handleChange} value={this.state.username} />
-                  <input type="text" name="currentItem" placeholder="What are you bringing?" onChange={this.handleChange} value={this.state.currentItem} />
-                  <button>Add Item</button>
-                </form>
-          </section>
+
           {this.state.user ?
-          <section className='display-item'>
-              <MuiThemeProvider>
-                <ListExampleSimple lessons={this.state.lessons} />
-              </MuiThemeProvider>
-          </section>
+          <nav className='display-item'>
+            <ProgramMenu lessons={this.state.lessons} />
+          </nav>
           :
-          <div className='wrapper'>
+          <nav className='wrapper'>
             <p>--- this indicates an unauthenticated vistor ---</p>
-          </div>
+          </nav>
           }
+
+          <div className='content'><Content content={this.state.module} /></div>
         </div>
       </div>
+      </MuiThemeProvider>
     );
   }
 }
