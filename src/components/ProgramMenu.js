@@ -17,11 +17,11 @@ export default class ProgramMenu extends React.Component {
               <ListItem
                 key={lesson.week}
                 primaryText={lesson.title}
-                leftIcon={<ActionGrade />}
+                // leftIcon={<ActionGrade />}
                 initiallyOpen={false}
                 primaryTogglesNestedList={true}
                 nestedItems={[
-                  <ModuleList modules={mods} key={i}/>
+                  <ModuleList modules={mods} key={i} onSelectModule={this.props.onSelectModule}/>
                 ]}
               />
             )

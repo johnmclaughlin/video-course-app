@@ -18,25 +18,19 @@ class App extends Component {
       currentItem: '',
       username: '',
       lessons: [],
-      module: [{
-        title: "This default title",
-        subtitle: "This is the default subtitle",
-        ref: "This is the module reference",
-        description: "This is the default description",
-        videoRef: "This is the default video reference"
-      }],
+      module: [],
       user: null
     }
-    this.handleChange = this.handleChange.bind(this);
+    this.handleModule = this.handleModule.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
   }
-  handleChange(e) {
-    this.setState({
-      [e.target.name]: e.target.value
-    });
+
+  handleModule = (modValue) => {
+    this.setState({module: modValue.val});
   }
+
   logout() {
     auth.signOut()
       .then(() => {
@@ -86,7 +80,14 @@ class App extends Component {
         });
       }
       this.setState({
-        lessons: newState
+        lessons: newState,
+        module: {
+          title: "This default title",
+          subtitle: "This is the default subtitle",
+          ref: "This is the module reference",
+          description: "This is the default description",
+          videoRef: "none"
+      }
       });
     });
   }
@@ -125,7 +126,7 @@ class App extends Component {
 
           {this.state.user ?
           <nav className='display-item'>
-            <ProgramMenu lessons={this.state.lessons} />
+            <ProgramMenu lessons={this.state.lessons} onSelectModule={this.handleModule}/>
           </nav>
           :
           <nav className='wrapper'>
@@ -133,7 +134,7 @@ class App extends Component {
           </nav>
           }
 
-          <div className='content'><Content content={this.state.module} /></div>
+          <div className='content'><Content content={this.state.module}/></div>
         </div>
       </div>
       </MuiThemeProvider>
