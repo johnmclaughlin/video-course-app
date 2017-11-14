@@ -9,8 +9,10 @@ body {
 
 nav {
   width: 25%;
-  background: orangered;
 
+  div {
+    background: orangered;
+  }
     ul {
       display: flex;
       justify-content: space-between;
@@ -52,7 +54,12 @@ nav {
 
 .content {
   width: 75%;
+  padding: 20px;
   background: darkorange;
+
+  h2,h4 {
+    margin: 0;
+  }
 }
 
 .control {

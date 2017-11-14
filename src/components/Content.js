@@ -1,4 +1,7 @@
 import React from 'react';
+import Divider from 'material-ui/Divider';
+import Subheader from 'material-ui/Subheader';
+
 import YouTube from './YouTube';
   
 export default class Content extends React.Component {
@@ -15,6 +18,7 @@ render() {
         <div>
             <h2>{content.title}</h2>
             <h4>{content.subtitle}</h4>
+            <Divider inset={false} />
             {videoPlayer}
             <div>{content.description}</div>
         </div>
