@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import firebase, { auth, provider } from './firebase.js';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 import ProgramMenu from './ProgramMenu';
 import Content from './Content';
 
@@ -10,6 +12,14 @@ const muiTheme = getMuiTheme({
     // accent1Color: deepOrange500,
   },
 });
+
+const NoContent = {
+  title: "Welcome Message", 
+  subtitle: "For Unauthenticated Visitors", 
+  ref: "This is the module reference", 
+  description: "This is a good place to talk about the program and provide links back to the main webisite for more information", 
+  videoRef: "none"
+}
 
 class App extends Component {
   constructor(props) {
@@ -35,7 +45,9 @@ class App extends Component {
     auth.signOut()
       .then(() => {
         this.setState({
-          user: null
+          user: null,
+          lessons: [],
+          module: []
         });
       });
   }
@@ -82,10 +94,10 @@ class App extends Component {
       this.setState({
         lessons: newState,
         module: {
-          title: "This default title",
-          subtitle: "This is the default subtitle",
+          title: "Welcome Message for your clients",
+          subtitle: "For clients who have logged in",
           ref: "This is the module reference",
-          description: "This is the default description",
+          description: "This is an area for a high-level program overview",
           videoRef: "none"
       }
       });
@@ -95,47 +107,49 @@ class App extends Component {
     const itemRef = firebase.database().ref(`/items/${itemId}`);
     itemRef.remove();
   }
-  
+
   render() {
     return (
       <MuiThemeProvider muiTheme={muiTheme}>
       <div className='app'>
         <header>
           <div className="wrapper">
-            <h1>How to Lead Yourself to a Fulfilling Career</h1>
+            <div>
+              <h2>Lead Yourself to a Fulfilling Career</h2>
+              {this.state.user ?
+              <h5>{this.state.user.displayName}</h5>
+              :
+              <h5>Please log in to view your content</h5>
+              }
+            </div>
+              <div className="login">
+              <FlatButton label="Dashboard" />
+              <FlatButton label="Support" />
             {this.state.user ?
-              <div>
-                <h3>{this.state.user.displayName}</h3>
-                <button onClick={this.logout}>Logout</button> 
-              </div>               
+              <RaisedButton label="Logout" onClick={this.logout}/>
             :
-              <button onClick={this.login}>Log In</button>              
+              <RaisedButton label="Log In" onClick={this.login}/> 
             }
+            </div>
         </div>
         </header>
-        {this.state.user ?
-          <div>
-           {/* Move this block into access control */}
-          </div>
-        :
-          <div className='wrapper'>
-            <p>You must be logged in to see the program modules.</p>
-          </div>
-        } 
-        <div className='container'>
 
           {this.state.user ?
+            <div className='container'>
           <nav className='display-item'>
             <ProgramMenu lessons={this.state.lessons} onSelectModule={this.handleModule}/>
           </nav>
-          :
-          <nav className='wrapper'>
-            <p>--- this indicates an unauthenticated vistor ---</p>
-          </nav>
-          }
-
           <div className='content'><Content content={this.state.module}/></div>
-        </div>
+          </div>
+          :
+          <div className='container'>
+          <nav className='wrapper'>
+            <p></p>
+          </nav>
+          <div className='content'><Content content={NoContent}/></div>
+          </div>
+          }
+      
       </div>
       </MuiThemeProvider>
     );

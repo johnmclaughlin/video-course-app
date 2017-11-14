@@ -10,7 +10,6 @@ export default class ProgramMenu extends React.Component {
     return (
       <div>
         <List>
-          <Subheader>Program Modules</Subheader>
           {this.props.lessons.map((lesson, i) => {
             var mods = lesson.modules;
             return (
