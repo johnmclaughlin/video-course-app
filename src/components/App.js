@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import firebase, { auth, provider } from './firebase.js';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import RaisedButton from 'material-ui/RaisedButton';
-import FlatButton from 'material-ui/FlatButton';
+import { withStyles } from 'material-ui-next/styles';
+import Button from 'material-ui-next/Button';
 import ProgramMenu from './ProgramMenu';
 import Content from './Content';
 
@@ -124,12 +124,12 @@ class App extends Component {
               }
             </div>
               <div className="login">
-              <FlatButton label="Dashboard" />
-              <FlatButton label="Support" />
+              <Button>Dashboard</Button>
+              <Button>Support</Button>
             {this.state.user ?
-              <RaisedButton label="Logout" onClick={this.logout}/>
+              <Button raised onClick={this.logout}>Logout</Button>
             :
-              <RaisedButton label="Log In" onClick={this.login}/> 
+              <Button raised onClick={this.login}>Log In</Button> 
             }
             </div>
         </div>
