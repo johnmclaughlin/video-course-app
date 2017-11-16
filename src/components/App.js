@@ -4,6 +4,7 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { withStyles } from 'material-ui-next/styles';
 import Button from 'material-ui-next/Button';
+import IconButton from 'material-ui-next/IconButton';
 import ProgramMenu from './ProgramMenu';
 import Content from './Content';
 
@@ -124,8 +125,8 @@ class App extends Component {
               }
             </div>
               <div className="login">
-              <Button>Dashboard</Button>
-              <Button>Support</Button>
+              <IconButton><i className="material-icons">home</i></IconButton>
+              <IconButton><i className="material-icons">help</i></IconButton>
             {this.state.user ?
               <Button raised onClick={this.logout}>Logout</Button>
             :
