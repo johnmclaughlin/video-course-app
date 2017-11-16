@@ -78,7 +78,7 @@ class App extends Component {
       if (user) {
         this.setState({ user });
       } 
-    });
+    
     const lessonsRef = firebase.database().ref('lessons');
     lessonsRef.on('value', (snapshot) => {
       let lessons = snapshot.val();
@@ -102,6 +102,7 @@ class App extends Component {
       }
       });
     });
+  });
   }
   removeItem(itemId) {
     const itemRef = firebase.database().ref(`/items/${itemId}`);
