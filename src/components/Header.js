@@ -42,7 +42,7 @@ const flex = {
           const drawer = (
             <div>
                 <nav className='display-item'>
-                <ProgramMenu lessons={this.props.lessons} onSelectModule={this.props.handleModule}/>
+                <ProgramMenu lessons={this.props.lessons} onSelectModule={this.props.onSelectModule}/>
               </nav> 
             </div>
           );
@@ -61,7 +61,7 @@ const flex = {
                     <Typography type="subheading" gutterBottom color="inherit" style={flex}>
                             {this.props.username}
                     </Typography>
-                    <IconButton><i className="material-icons toolbar">home</i></IconButton>
+                    <IconButton><i className="material-icons toolbar" onClick={this.props.resetContent}>home</i></IconButton>
                     <IconButton><i className="material-icons toolbar">help</i></IconButton>
                     {this.props.user ?
                     <Button raised onClick={this.props.logout}>Logout</Button>

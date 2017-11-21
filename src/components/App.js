@@ -39,6 +39,7 @@ class App extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
+    this.resetContent = this.resetContent.bind(this);
   }
 
   handleModule = (modValue) => {
@@ -79,35 +80,40 @@ class App extends Component {
       username: ''
     });
   }
+
+  resetContent() {
+    const lessonsRef = firebase.database().ref('lessons');
+    lessonsRef.on('value', (snapshot) => {
+      let lessons = snapshot.val();
+      let newState = [];
+      for (let lesson in lessons) {
+        newState.push({
+          id: lessons[lesson].id,
+          title: lessons[lesson].title,
+          week: lessons[lesson].week,
+          modules: lessons[lesson].modules
+        });
+      }
+      this.setState({
+        lessons: newState,
+        module: {
+          title: "Welcome Message for your clients",
+          subtitle: "For clients who have logged in",
+          ref: "This is the module reference",
+          description: "This is an area for a high-level program overview",
+          videoRef: "none"
+      }
+    });
+  });
+  }
+
   componentDidMount() {
     auth.onAuthStateChanged((user) => {
       if (user) {
         this.setState({ user });
       } 
     
-      const lessonsRef = firebase.database().ref('lessons');
-      lessonsRef.on('value', (snapshot) => {
-        let lessons = snapshot.val();
-        let newState = [];
-        for (let lesson in lessons) {
-          newState.push({
-            id: lessons[lesson].id,
-            title: lessons[lesson].title,
-            week: lessons[lesson].week,
-            modules: lessons[lesson].modules
-          });
-        }
-        this.setState({
-          lessons: newState,
-          module: {
-            title: "Welcome Message for your clients",
-            subtitle: "For clients who have logged in",
-            ref: "This is the module reference",
-            description: "This is an area for a high-level program overview",
-            videoRef: "none"
-        }
-      });
-    });
+      this.resetContent();
   });
   }
   removeItem(itemId) {
@@ -119,7 +125,7 @@ class App extends Component {
     return (
       <MuiThemeProvider muiTheme={muiTheme}>
       <div className='app'>
-        <Header user={this.state.user} classes={this.state.classes} login={this.login} logout={this.logout} lessons={this.state.lessons} username={this.state.displayName} onSelectModule={this.handleModule}/>
+        <Header user={this.state.user} classes={this.state.classes} login={this.login} logout={this.logout} lessons={this.state.lessons} onSelectModule={this.handleModule} resetContent={this.resetContent}/>
           {this.state.user ?
             <div className='container'>
           <nav className='display-item desktop'>
