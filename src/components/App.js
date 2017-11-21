@@ -112,10 +112,10 @@ class App extends Component {
       if (user) {
         this.setState({ user });
       } 
-    
       this.resetContent();
   });
   }
+  
   removeItem(itemId) {
     const itemRef = firebase.database().ref(`/items/${itemId}`);
     itemRef.remove();
