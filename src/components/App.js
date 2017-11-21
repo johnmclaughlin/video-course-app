@@ -8,6 +8,8 @@ import IconButton from 'material-ui-next/IconButton';
 import ProgramMenu from './ProgramMenu';
 import Content from './Content';
 
+import Header from './Header';
+
 const muiTheme = getMuiTheme({
   palette: {
     // accent1Color: deepOrange500,
@@ -30,6 +32,7 @@ class App extends Component {
       username: '',
       lessons: [],
       module: [],
+      classes: {},
       user: null
     }
     this.handleModule = this.handleModule.bind(this);
@@ -47,6 +50,7 @@ class App extends Component {
       .then(() => {
         this.setState({
           user: null,
+          username: '',
           lessons: [],
           module: []
         });
@@ -57,7 +61,8 @@ class App extends Component {
       .then((result) => {
         const user = result.user;
         this.setState({
-          user
+          user,
+          username: user.username
         });
       });
   }
@@ -80,27 +85,27 @@ class App extends Component {
         this.setState({ user });
       } 
     
-    const lessonsRef = firebase.database().ref('lessons');
-    lessonsRef.on('value', (snapshot) => {
-      let lessons = snapshot.val();
-      let newState = [];
-      for (let lesson in lessons) {
-        newState.push({
-          id: lessons[lesson].id,
-          title: lessons[lesson].title,
-          week: lessons[lesson].week,
-          modules: lessons[lesson].modules
-        });
-      }
-      this.setState({
-        lessons: newState,
-        module: {
-          title: "Welcome Message for your clients",
-          subtitle: "For clients who have logged in",
-          ref: "This is the module reference",
-          description: "This is an area for a high-level program overview",
-          videoRef: "none"
-      }
+      const lessonsRef = firebase.database().ref('lessons');
+      lessonsRef.on('value', (snapshot) => {
+        let lessons = snapshot.val();
+        let newState = [];
+        for (let lesson in lessons) {
+          newState.push({
+            id: lessons[lesson].id,
+            title: lessons[lesson].title,
+            week: lessons[lesson].week,
+            modules: lessons[lesson].modules
+          });
+        }
+        this.setState({
+          lessons: newState,
+          module: {
+            title: "Welcome Message for your clients",
+            subtitle: "For clients who have logged in",
+            ref: "This is the module reference",
+            description: "This is an area for a high-level program overview",
+            videoRef: "none"
+        }
       });
     });
   });
@@ -135,20 +140,17 @@ class App extends Component {
             </div>
         </div>
         </header>
-
+        <Header user={this.state.user} classes={this.state.classes} login={this.login} logout={this.logout} lessons={this.state.lessons} username={this.state.displayName} onSelectModule={this.handleModule}/>
           {this.state.user ?
             <div className='container'>
-          <nav className='display-item'>
+          <nav className='display-item  desktop'>
             <ProgramMenu lessons={this.state.lessons} onSelectModule={this.handleModule}/>
           </nav>
           <div className='content'><Content content={this.state.module}/></div>
           </div>
           :
           <div className='container'>
-          <nav className='wrapper'>
-            <p></p>
-          </nav>
-          <div className='content'><Content content={NoContent}/></div>
+          <div className='content__unauthenticated'><Content content={NoContent}/></div>
           </div>
           }
       

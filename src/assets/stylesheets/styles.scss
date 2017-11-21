@@ -21,7 +21,16 @@ header .wrapper {
 }
 
 nav {
-  width: 30%;
+  width: 100%;
+
+  &.desktop {
+    display: none;
+
+    @media only screen and (min-width: "960px") { 
+      display: block;
+      width: 30%; 
+    }
+  }
   
   & > div:first-of-type {
     background: white;
@@ -69,12 +78,25 @@ nav {
 }
 
 .content {
-  width: 70%;
+  width: 100%;
   padding: 30px 20px;
   background: white;
-  margin-left: 20px;
   box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
   border-radius: 2px;
+
+  @media only screen and (min-width: "960px") { 
+    width: 70%;
+    margin-left: 20px; 
+  }
+
+  &__unauthenticated {
+    width: 100%;
+    margin-left: 0;
+    padding: 30px 20px;
+    background: white;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
+    border-radius: 2px;
+  }
 
   h2 {
     margin: 0;
