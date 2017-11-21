@@ -20,7 +20,9 @@ const root = {
     width: '100%'
   };
 const flex = {
-    flex: 1,
+    flex: '1 1 50%',
+    'font-size': '3vw',
+    'margin-top': '1vw'
   };
  const menuButton =  {
     marginLeft: -12,
@@ -57,9 +59,6 @@ const flex = {
                     </div>
                     <Typography type="title" gutterBottom color="inherit" style={flex}>
                     Lead Yourself to a Fulfilling Career
-                    </Typography>
-                    <Typography type="subheading" gutterBottom color="inherit" style={flex}>
-                            {this.props.username}
                     </Typography>
                     <IconButton><i className="material-icons toolbar" onClick={this.props.resetContent}>home</i></IconButton>
                     <IconButton><i className="material-icons toolbar">help</i></IconButton>
