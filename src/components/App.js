@@ -119,31 +119,10 @@ class App extends Component {
     return (
       <MuiThemeProvider muiTheme={muiTheme}>
       <div className='app'>
-        <header>
-          <div className="wrapper">
-            <div>
-              <h2>Lead Yourself to a Fulfilling Career</h2>
-              {this.state.user ?
-              <h5>{this.state.user.displayName}</h5>
-              :
-              <h5>Please log in to view your content</h5>
-              }
-            </div>
-              <div className="login">
-              <IconButton><i className="material-icons">home</i></IconButton>
-              <IconButton><i className="material-icons">help</i></IconButton>
-            {this.state.user ?
-              <Button raised onClick={this.logout}>Logout</Button>
-            :
-              <Button raised onClick={this.login}>Log In</Button> 
-            }
-            </div>
-        </div>
-        </header>
         <Header user={this.state.user} classes={this.state.classes} login={this.login} logout={this.logout} lessons={this.state.lessons} username={this.state.displayName} onSelectModule={this.handleModule}/>
           {this.state.user ?
             <div className='container'>
-          <nav className='display-item  desktop'>
+          <nav className='display-item desktop'>
             <ProgramMenu lessons={this.state.lessons} onSelectModule={this.handleModule}/>
           </nav>
           <div className='content'><Content content={this.state.module}/></div>

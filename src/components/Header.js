@@ -16,7 +16,7 @@ import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui-next/Lis
 import ProgramMenu from './ProgramMenu';
 
 const root = {
-    marginTop: '3em',
+    marginTop: '0',
     width: '100%'
   };
 const flex = {
@@ -50,17 +50,19 @@ const flex = {
             <div style={root}>
             <AppBar position="static">
                 <Toolbar>
-                    <IconButton style={menuButton} color="contrast" aria-label="Menu" onClick={this.handleDrawerToggle} className={classes.navIconHide}>
-                    <i className="material-icons">menu</i>
-                    </IconButton>
+                    <div className="button__menu">
+                        <IconButton style={menuButton} color="contrast" aria-label="Menu" onClick={this.handleDrawerToggle}>
+                            <i className="material-icons">menu</i>
+                        </IconButton>
+                    </div>
                     <Typography type="title" gutterBottom color="inherit" style={flex}>
                     Lead Yourself to a Fulfilling Career
                     </Typography>
                     <Typography type="subheading" gutterBottom color="inherit" style={flex}>
                             {this.props.username}
                     </Typography>
-                    <IconButton><i className="material-icons">home</i></IconButton>
-                    <IconButton><i className="material-icons">help</i></IconButton>
+                    <IconButton><i className="material-icons toolbar">home</i></IconButton>
+                    <IconButton><i className="material-icons toolbar">help</i></IconButton>
                     {this.props.user ?
                     <Button raised onClick={this.props.logout}>Logout</Button>
                     :
