@@ -13,6 +13,7 @@ constructor(props){
 render() {
     return (
       <div>
+      <h2>I will be moving the login down here and getting rid of the large button in the header</h2>
            <TextField
              hintText="Enter your Username"
              floatingLabelText="Username"

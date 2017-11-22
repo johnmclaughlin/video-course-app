@@ -12,6 +12,8 @@ MAIN APPLICATION
 6. [ done ] Fix broken link in mobile Program Menu
 7. Make SVG for header to scale to all devices
 8. Add Google Analytics
+9. Close open lists upon new list open
+10. Test close mobile menu upon module selection
 
 AUTHENTICATION
 1. Built out email and other federated logins. Decide how many to build out
@@ -28,5 +30,5 @@ ADMINISTRATION
 3. User management
 
 MISC
-1. [ done ] Setup extral access with NGROK
+1. [ done ] Setup external access with NGROK
     a. Remember to update Google OAUTH when resetting NGROK
