@@ -9,6 +9,7 @@ import ProgramMenu from './ProgramMenu';
 import Content from './Content';
 
 import Header from './Header';
+import Login from './Login';
 
 const muiTheme = getMuiTheme({
   palette: {
@@ -115,7 +116,7 @@ class App extends Component {
       this.resetContent();
   });
   }
-  
+
   removeItem(itemId) {
     const itemRef = firebase.database().ref(`/items/${itemId}`);
     itemRef.remove();
@@ -134,8 +135,9 @@ class App extends Component {
           <div className='content'><Content content={this.state.module}/></div>
           </div>
           :
-          <div className='container'>
-          <div className='content__unauthenticated'><Content content={NoContent}/></div>
+
+          <div>
+            <Login />
           </div>
           }
       

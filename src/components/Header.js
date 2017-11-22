@@ -21,8 +21,8 @@ const root = {
   };
 const flex = {
     flex: '1 1 50%',
-    'font-size': '3vw',
-    'margin-top': '1vw'
+    'fontSize': '3vw',
+    'marginTop': '1vw'
   };
  const menuButton =  {
     marginLeft: -12,
