@@ -32,3 +32,4 @@ ADMINISTRATION
 MISC
 1. [ done ] Setup external access with NGROK
     a. Remember to update Google OAUTH when resetting NGROK
+    b. use: ngrok http 8080 -host-header="localhost:8080"
