@@ -26,7 +26,7 @@ const root = {
     width: '100%'
   };
 const flex = {
-    flex: 1,
+    flex: 1
   };
  const menuButton =  {
     marginLeft: -12,

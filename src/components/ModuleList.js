@@ -12,7 +12,7 @@ renderList(modules) {
     for (const k in modules){
         let val = modules[k];
         let title = val.title;
-        list.push(<ListItem key={title} primaryText={title} onClick={() => this.handleModChange({val})}/> );
+        list.push(<ListItem key={k} primaryText={title} onClick={() => this.handleModChange({val})}/> );
     }
     return list;
 }

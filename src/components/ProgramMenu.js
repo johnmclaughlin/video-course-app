@@ -14,7 +14,7 @@ export default class ProgramMenu extends React.Component {
             var mods = lesson.modules;
             return (
               <ListItem
-                key={lesson.week}
+                key={i}
                 primaryText={lesson.title}
                 // leftIcon={<ActionGrade />}
                 initiallyOpen={false}
