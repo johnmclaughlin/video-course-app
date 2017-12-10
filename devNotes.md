@@ -33,3 +33,6 @@ MISC
 1. [ done ] Setup external access with NGROK
     a. Remember to update Google OAUTH when resetting NGROK
     b. use: ngrok http 8080 -host-header="localhost:8080"
+2. install aliased NPM packages:
+    a.  yarn add material-ui@latest
+        yarn add material-ui-next@npm:material-ui@next

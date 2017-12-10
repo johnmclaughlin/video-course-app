@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import firebase, { auth, provider } from './firebase.js';
+import SignInScreen from './FirebaseAuth';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { withStyles } from 'material-ui-next/styles';
@@ -9,7 +10,7 @@ import ProgramMenu from './ProgramMenu';
 import Content from './Content';
 
 import Header from './Header';
-import Login from './Login';
+
 
 const muiTheme = getMuiTheme({
   palette: {
@@ -83,6 +84,7 @@ class App extends Component {
   }
 
   resetContent() {
+    console.log('resetContent', firebase);
     const lessonsRef = firebase.database().ref('lessons');
     lessonsRef.on('value', (snapshot) => {
       let lessons = snapshot.val();
@@ -113,6 +115,7 @@ class App extends Component {
       if (user) {
         this.setState({ user });
       } 
+      console.log('in componentDidMount');
       this.resetContent();
   });
   }
@@ -137,7 +140,7 @@ class App extends Component {
           :
 
           <div>
-            <Login />
+            <SignInScreen />
           </div>
           }
       

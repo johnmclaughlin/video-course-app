@@ -65,9 +65,9 @@ const flex = {
                     <IconButton><i className="material-icons toolbar" onClick={this.props.resetContent}>home</i></IconButton>
                     <IconButton><i className="material-icons toolbar">help</i></IconButton>
                     {this.props.user ?
-                    <Button raised onClick={this.props.logout}>Logout</Button>
+                    <IconButton><i className="material-icons toolbar" onClick={this.props.logout}>account_circle</i></IconButton>
                     :
-                    <Button raised onClick={this.props.login}>Log In</Button> 
+                    <IconButton><i className="material-icons toolbar" style={{ opacity: 0.5 }} onClick={this.props.login}>account_circle</i></IconButton> 
                     } 
                 </Toolbar>
             </AppBar>

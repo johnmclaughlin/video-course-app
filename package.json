@@ -35,10 +35,13 @@
   },
   "dependencies": {
     "firebase": "^4.6.1",
+    "firebaseui": "^2.5.1",
     "material-ui": "^0.19.4",
+    "material-ui-next": "npm:material-ui@next",
     "react": "^15.6.2",
     "react-addons-css-transition-group": "^15.6.2",
     "react-dom": "^15.6.2",
+    "react-firebaseui": "^1.0.10",
     "typeface-roboto": "0.0.45"
   }
 }

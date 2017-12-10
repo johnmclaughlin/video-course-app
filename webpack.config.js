@@ -56,6 +56,10 @@ let config = {
                 }],
                 exclude: /node_modules/,
                 include: __dirname,
+            },
+            {
+                test: /\.css/,
+                use: [ 'style-loader', 'css-loader' ]
             }
         ]
     },
