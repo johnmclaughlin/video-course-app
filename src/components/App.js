@@ -84,7 +84,6 @@ class App extends Component {
   }
 
   resetContent() {
-    console.log('resetContent', firebase);
     const lessonsRef = firebase.database().ref('lessons');
     lessonsRef.on('value', (snapshot) => {
       let lessons = snapshot.val();

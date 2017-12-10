@@ -23,6 +23,10 @@ USER MANAGEMENT
     a. user id
     b. current module
     c. log user login
+2. Create new user generator
+    a. ADMIN - create new user + auth code
+    b. email auth code to new user
+    c. consume auth code as URL parameter
 
 ADMINISTRATION
 1. Module Management
