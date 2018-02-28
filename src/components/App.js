@@ -11,7 +11,6 @@ import Content from './Content';
 
 import Header from './Header';
 
-
 const muiTheme = getMuiTheme({
   palette: {
     // accent1Color: deepOrange500,
@@ -32,6 +31,7 @@ class App extends Component {
     this.state = {
       currentItem: '',
       username: '',
+      userWeek: '',
       lessons: [],
       module: [],
       classes: {},
@@ -99,10 +99,10 @@ class App extends Component {
       this.setState({
         lessons: newState,
         module: {
-          title: "Welcome Message for your clients",
-          subtitle: "For clients who have logged in",
+          title: "Welcome to Create Your Great",
+          subtitle: "How To Create Your Dream Career",
           ref: "This is the module reference",
-          description: "This is an area for a high-level program overview",
+          description: "",
           videoRef: "none"
       }
     });
@@ -111,8 +111,30 @@ class App extends Component {
 
   componentDidMount() {
     auth.onAuthStateChanged((user) => {
+      
+      // If user state changes and 'user' exists, check Firebase Database for user
+      const usersRef = firebase.database().ref(`users/s${user.uid}`);
+      usersRef.once('value', snapshot => {
+          if (!snapshot.val()) {
+              usersRef.set({
+                email: user.email,
+                displayName: user.displayName,
+                startDate: Date.now(),
+                role: 'user'
+              });
+          } else {
+            let userWeek = ((Date.now() - snapshot.val().startDate)/(1000*60*60*24*7)).toFixed(0);
+            if(userWeek === '0'){ userWeek = '1'};
+            this.setState({ 
+              userWeek: userWeek
+            });
+          }
+      });
+
       if (user) {
-        this.setState({ user });
+        this.setState({ 
+          user
+        });
       } 
       console.log('in componentDidMount');
       this.resetContent();
@@ -128,11 +150,11 @@ class App extends Component {
     return (
       <MuiThemeProvider muiTheme={muiTheme}>
       <div className='app'>
-        <Header user={this.state.user} classes={this.state.classes} login={this.login} logout={this.logout} lessons={this.state.lessons} onSelectModule={this.handleModule} resetContent={this.resetContent}/>
+        <Header user={this.state.user} classes={this.state.classes} login={this.login} logout={this.logout} lessons={this.state.lessons} userWeek={this.state.userWeek} onSelectModule={this.handleModule} resetContent={this.resetContent}/>
           {this.state.user ?
             <div className='container'>
           <nav className='display-item desktop'>
-            <ProgramMenu lessons={this.state.lessons} onSelectModule={this.handleModule}/>
+            <ProgramMenu lessons={this.state.lessons} userWeek={this.state.userWeek} onSelectModule={this.handleModule}/>
           </nav>
           <div className='content'><Content content={this.state.module}/></div>
           </div>

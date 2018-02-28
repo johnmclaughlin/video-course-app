@@ -7,11 +7,13 @@ import ModuleList from './ModuleList';
 export default class ProgramMenu extends React.Component {
 
   render() {
+    
     return (
       <div>
         <List>
           {this.props.lessons.map((lesson, i) => {
             var mods = lesson.modules;
+            if(lesson.week <= this.props.userWeek){
             return (
               <ListItem
                 key={i}
@@ -24,6 +26,7 @@ export default class ProgramMenu extends React.Component {
                 ]}
               />
             )
+            }
           })}
         </List>
       </div>

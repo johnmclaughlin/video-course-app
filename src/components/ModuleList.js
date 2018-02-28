@@ -20,7 +20,7 @@ renderList(modules) {
 render() {
     let modules = this.props.modules;
     return (
-        <div>
+        <div className="chapter">
             { this.renderList(modules) }
         </div>
     )

@@ -43,7 +43,7 @@ const flex = {
                     <i className="material-icons">menu</i>
                     </IconButton>
                     <Typography type="title" color="inherit" className={flex}>
-                    Lead Yourself to a Fulfilling Career
+                    Create Your Great
                     </Typography>
                     <IconButton><i className="material-icons">home</i></IconButton>
                     <IconButton><i className="material-icons">help</i></IconButton>
