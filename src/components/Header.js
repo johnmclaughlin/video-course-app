@@ -12,7 +12,7 @@ import Popover from 'material-ui/Popover';
 import Hidden from 'material-ui-next/Hidden';
 import Drawer from 'material-ui-next/Drawer';
 import Divider from 'material-ui-next/Divider';
-import MenuIcon from 'material-ui-icons/Menu';
+
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui-next/List';
 
 import ProgramMenu from './ProgramMenu';
