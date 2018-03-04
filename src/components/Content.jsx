@@ -1,9 +1,7 @@
 import React from 'react';
 import Divider from 'material-ui/Divider';
-import Subheader from 'material-ui/Subheader';
-
 import YouTube from './YouTube';
-  
+
 export default class Content extends React.Component {
 render() {
     let content = this.props.content;
