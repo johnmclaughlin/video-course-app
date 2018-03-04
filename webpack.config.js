@@ -5,10 +5,11 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const OptimizeCSSAssets = require('optimize-css-assets-webpack-plugin');
 
 let config = {
-    entry: './src/index.js',
+    entry: './src/index.jsx',
     output: {
         path: path.resolve(__dirname, './public'),
-        filename: 'output.js'
+        filename: 'output.js',
+    publicPath: '/',
     },
     module: {
         rules: [
@@ -32,8 +33,13 @@ let config = {
             {
                 test: /\.jsx?$/, // files ending with .jsx
                 exclude: /node_modules/, // exclude the node_modules directory
-                loader: "babel-loader" // use this (babel-core) loader
-            },
+                loader: 'babel-loader', // use this (babel-core) loader
+                include: [
+                  path.resolve(__dirname, './src'),
+                  // webpack-dev-server#1090 for Safari
+                  /node_modules\/webpack-dev-server/,
+                ],
+              },
             {
                 test: /\.(jpe?g|png|gif|svg)$/i,
                 loaders: ['file-loader?context=src/assets/images/&name=images/[path][name].[ext]', {  // images loader
@@ -63,6 +69,9 @@ let config = {
             }
         ]
     },
+    resolve: {
+        extensions: ['.js', '.jsx'],
+      },
     plugins: [
         new ExtractTextWebpackPlugin('styles.css')
     ],
