@@ -40,3 +40,25 @@ MISC
 2. install aliased NPM packages:
     a.  yarn add material-ui@latest
         yarn add material-ui-next@npm:material-ui@next
+
+Installing eslint / AirBnB
+
+npm install eslint
+npx install-peerdeps --dev eslint-config-airbnb
+npm install babel-eslint --save-dev
+
+.eslintrc
+    module.exports = {
+        "extends": "airbnb",
+        "parser": "babel-eslint",
+        "plugins": [
+            "react",
+            "jsx-a11y",
+            "import"
+        ],
+        "env": {
+            "browser": true,
+            "node": true,
+            "jasmine": true
+        },
+    };
