@@ -20,6 +20,10 @@ header .wrapper {
   }
 }
 
+header .controls {
+  display: flex;
+}
+
 nav {
   width: 100%;
 
@@ -28,7 +32,7 @@ nav {
 
     @media only screen and (min-width: "960px") { 
       display: block;
-      width: 30%; 
+      width: 30%;
     }
   }
   
@@ -139,7 +143,18 @@ header .desktop {
     @media only screen and (min-width: "960px") { 
       display: block;
       width: 70%; 
-      margin-top: -37px;
+      margin-top: -10px;
       font-size: 2.25vw;
     }
   }
+
+.admin {
+  width: 80vw;
+
+  &.user {
+
+  }
+  &.content {
+
+  }
+}

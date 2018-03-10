@@ -1,6 +1,7 @@
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import React, { Component } from 'react';
+import Moment from 'moment';
 import firebase, { auth, provider } from './firebase';
 import SignInScreen from './FirebaseAuth';
 import ProgramMenu from './ProgramMenu';
@@ -27,11 +28,12 @@ class App extends Component {
     this.state = {
       currentItem: '',
       username: '',
-      userWeek: '',
+      userWeek: '0',
       lessons: [],
       module: [],
       classes: {},
       user: null,
+      role: 'user',
     };
     this.handleModule = this.handleModule.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -44,7 +46,7 @@ class App extends Component {
     auth.onAuthStateChanged((user) => {
       // If user state changes and 'user' exists, check Firebase Database for user
       const usersRef = firebase.database().ref(`users/s${user.uid}`);
-      usersRef.once('value', (snapshot) => {
+      usersRef.on('value', (snapshot) => {
         if (!snapshot.val()) {
           usersRef.set({
             email: user.email,
@@ -53,10 +55,17 @@ class App extends Component {
             role: 'user',
           });
         } else {
+          const { role } = snapshot.val();
+          const now = Moment().format('x');
+          console.log(now);
+          console.log(Date.now());
+          console.log(Moment().startOf('day').format('x'));
           let userWeek = ((Date.now() - snapshot.val().startDate) / (1000 * 60 * 60 * 24 * 7)).toFixed(0);
           if (userWeek === '0') { userWeek = '1'; }
+          if (role === 'admin') { userWeek = '100'; } // ADMIN USERS CAN VIEW ALL CONTENT
           this.setState({
             userWeek,
+            role,
           });
         }
       });
@@ -141,7 +150,17 @@ class App extends Component {
     return (
       <MuiThemeProvider muiTheme={muiTheme}>
         <div className="app">
-          <Header user={this.state.user} classes={this.state.classes} login={this.login} logout={this.logout} lessons={this.state.lessons} userWeek={this.state.userWeek} onSelectModule={this.handleModule} resetContent={this.resetContent} />
+          <Header
+            user={this.state.user}
+            classes={this.state.classes}
+            login={this.login}
+            logout={this.logout}
+            lessons={this.state.lessons}
+            userWeek={this.state.userWeek}
+            onSelectModule={this.handleModule}
+            resetContent={this.resetContent}
+            role={this.state.role}
+          />
           {this.state.user ?
             <div className="container">
               <nav className="display-item desktop">
