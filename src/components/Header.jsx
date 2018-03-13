@@ -8,6 +8,7 @@ import Drawer from 'material-ui-next/Drawer';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui-next/styles';
 import Modal from 'material-ui-next/Modal';
+import Moment from 'moment';
 import ProgramMenu from './ProgramMenu';
 
 const root = {
@@ -82,6 +83,82 @@ const SupportModal = withStyles(styles)(SimpleModal);
 
 /* END SUPPORT MODAL */
 
+/* BEGIN USER ADMIN CONTROLS */
+
+class UserAdminInput extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      userID: '',
+      userRole: '',
+      userStartDate: '',
+    };
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+  handleChange(event) {
+    event.preventDefault();
+    console.log('hendleChange method');
+    const value = event.target.value;
+
+    this.setState(() => ({
+      username: value,
+    }));
+  }
+  handleSubmit(event) {
+    event.preventDefault();
+
+    this.props.onSubmit(
+      this.props.id,
+      this.state.username,
+    );
+  }
+  render() {
+    return (
+      <form className="column" onSubmit={this.handleSubmit}>
+        <input type="hidden" value={this.props.userID} />
+        <div>
+          <label className="header" htmlFor="userRole">Role:
+            <select
+              value={this.props.userRole}
+              onChange={this.handleChange}
+            >
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+              <option value="disabled">Disabled</option>
+            </select>
+          </label>
+        </div>
+        <div>
+          <label className="header" htmlFor="userRole">Current Module:
+            <select value={this.props.currentModule} onChange={this.handleChange}>
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+            </select>
+          </label>
+        </div>
+        <button
+          className="button"
+          type="submit"
+          disabled={!this.props.email}
+        >
+             Update User
+        </button>
+      </form>
+    );
+  }
+}
+
+/* END USER ADMIN CONTROLS */
+
 
 export default class Header extends React.Component { // eslint-disable-line react/no-multi-comp
     state = {
@@ -112,6 +189,18 @@ export default class Header extends React.Component { // eslint-disable-line rea
       render() {
         const { classes } = this.props;
 
+        const keys = [];
+        const getKeys = (obj) => {
+          Object.keys(obj).forEach((key) => {
+            if (obj[key] && typeof obj[key] === 'object') {
+              keys.push(key);
+            }
+          });
+        };
+
+        getKeys(this.props.allUsers);
+        const users = Object.keys(this.props.allUsers).map(user => this.props.allUsers[user]);
+
         const userList = (
           <div>
             <div className="admin__title">User Administration</div>
@@ -119,7 +208,17 @@ export default class Header extends React.Component { // eslint-disable-line rea
               <ul>
                 <li>Display all users and their details</li>
                 <li>Modify userWeek, role [ user, admin, disabled ]</li>
+                <li>Create email link with unique key for new users</li>
               </ul>
+
+              {users.map((user, index) => (
+                <div key={user.email}>
+                  <div>Key:{keys[index]}</div>
+                  <div>Name:{user.displayName}</div>
+                  <div>Email: {user.email}</div>
+                  <UserAdminInput userRole={user.role} userID={keys[index]} email={user.email} currentModule={((Date.now() - user.startDate) / (1000 * 60 * 60 * 24 * 7)).toFixed(0)} />
+                </div>
+                  ))}
             </div>
           </div>
         );
@@ -132,6 +231,22 @@ export default class Header extends React.Component { // eslint-disable-line rea
                 <li>Display all videos and their details</li>
                 <li>Modify all videos and their details</li>
               </ul>
+              <ol>
+                {this.props.lessons.map((lesson) => {
+                  // convert object to array so we can use .map
+                  const mods = Object.keys(lesson.modules).map(item => lesson.modules[item]);
+                    return (
+                      <li key={lesson.title}>{lesson.title}
+                        <ol>
+                          {mods.map(mod => (
+                            <li key={mod.title}>{mod.title}</li>
+                            ))
+                          }
+                        </ol>
+                      </li>
+                    );
+                })}
+              </ol>
             </div>
           </div>
         );
@@ -156,7 +271,7 @@ export default class Header extends React.Component { // eslint-disable-line rea
                     Create Your Great <span className="desktop">How To Create Your Dream Career</span>
                 </Typography>
                 <div className="controls">
-                  <div classNmae="controls__user">
+                  <div className="controls__user">
                     <IconButton><i className="material-icons toolbar" onClick={this.props.resetContent}>home</i></IconButton>
                     <IconButton><i className="material-icons toolbar" onClick={this.handleOpenModal}>help</i></IconButton>
 
@@ -167,7 +282,7 @@ export default class Header extends React.Component { // eslint-disable-line rea
                     }
                   </div>
                   {this.props.role === 'admin' && // need to load user data
-                  <div classNmae="controls__admin">
+                  <div className="controls__admin">
                     <IconButton><i className="material-icons toolbar" onClick={this.toggleDrawer('user', true)}>supervisor_account</i></IconButton>
                     <IconButton><i className="material-icons toolbar" onClick={this.toggleDrawer('content', true)}>video_library</i></IconButton>
                   </div>
@@ -185,8 +300,8 @@ export default class Header extends React.Component { // eslint-disable-line rea
                 className="admin users"
                 tabIndex={0}
                 role="button"
-                onClick={this.toggleDrawer('user', false)}
-                onKeyDown={this.toggleDrawer('user', false)}
+                // onClick={this.toggleDrawer('user', false)}
+                // onKeyDown={this.toggleDrawer('user', false)}
               >
                 {userList}
               </div>
@@ -198,8 +313,8 @@ export default class Header extends React.Component { // eslint-disable-line rea
                 className="admin modules"
                 tabIndex={0}
                 role="button"
-                onClick={this.toggleDrawer('content', false)}
-                onKeyDown={this.toggleDrawer('content', false)}
+                // onClick={this.toggleDrawer('content', false)}
+                // onKeyDown={this.toggleDrawer('content', false)}
               >
                 {contentList}
               </div>

@@ -34,6 +34,7 @@ class App extends Component {
       classes: {},
       user: null,
       role: 'user',
+      allUsers: '',
     };
     this.handleModule = this.handleModule.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -68,6 +69,14 @@ class App extends Component {
             role,
           });
         }
+      });
+
+      const getAllUsers = firebase.database().ref('users');
+      getAllUsers.on('value', (snapshot) => {
+        const allUsers = snapshot.val();
+        this.setState({
+          allUsers,
+        });
       });
 
       if (user) {
@@ -160,6 +169,7 @@ class App extends Component {
             onSelectModule={this.handleModule}
             resetContent={this.resetContent}
             role={this.state.role}
+            allUsers={this.state.allUsers}
           />
           {this.state.user ?
             <div className="container">
