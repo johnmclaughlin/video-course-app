@@ -61,6 +61,7 @@ class App extends Component {
           console.log(now);
           console.log(Date.now());
           console.log(Moment().startOf('day').format('x'));
+          console.log('tony', Moment(1519448462000).format());
           let userWeek = ((Date.now() - snapshot.val().startDate) / (1000 * 60 * 60 * 24 * 7)).toFixed(0);
           if (userWeek === '0') { userWeek = '1'; }
           if (role === 'admin') { userWeek = '100'; } // ADMIN USERS CAN VIEW ALL CONTENT

@@ -91,7 +91,7 @@ class UserAdminInput extends React.Component {
     this.state = {
       userID: '',
       userRole: '',
-      userStartDate: '',
+      currentModule: '',
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -99,29 +99,31 @@ class UserAdminInput extends React.Component {
   }
   handleChange(event) {
     event.preventDefault();
-    console.log('hendleChange method');
-    const value = event.target.value;
-
-    this.setState(() => ({
-      username: value,
-    }));
+    const { value, id } = event.target;
+    if (id === 'userRole') { this.setState(() => ({ userRole: value })); }
+    if (id === 'currentModule') { this.setState(() => ({ currentModule: value })); }
   }
+
   handleSubmit(event) {
     event.preventDefault();
 
     this.props.onSubmit(
-      this.props.id,
-      this.state.username,
+      this.props.userID,
+      this.state.userRole,
+      this.state.currentModule,
     );
   }
   render() {
+    const userHandler = this.state.userRole === '' ? this.props.userRole : this.state.userRole;
+    const moduleHandler = this.state.currentModule === '' ? this.props.currentModule : this.state.currentModule;
     return (
       <form className="column" onSubmit={this.handleSubmit}>
         <input type="hidden" value={this.props.userID} />
         <div>
           <label className="header" htmlFor="userRole">Role:
             <select
-              value={this.props.userRole}
+              id="userRole"
+              value={userHandler}
               onChange={this.handleChange}
             >
               <option value="user">User</option>
@@ -132,7 +134,11 @@ class UserAdminInput extends React.Component {
         </div>
         <div>
           <label className="header" htmlFor="userRole">Current Module:
-            <select value={this.props.currentModule} onChange={this.handleChange}>
+            <select
+              id="currentModule"
+              value={moduleHandler}
+              onChange={this.handleChange}
+            >
               <option value="0">0</option>
               <option value="1">1</option>
               <option value="2">2</option>
@@ -161,78 +167,88 @@ class UserAdminInput extends React.Component {
 
 
 export default class Header extends React.Component { // eslint-disable-line react/no-multi-comp
-    state = {
+  constructor(props) {
+    super(props);
+    this.state = {
       mobileOpen: false,
       open: false,
       user: false,
       content: false,
     };
 
-      handleDrawerToggle = () => {
-        this.setState({ mobileOpen: !this.state.mobileOpen });
-      };
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
 
-      toggleDrawer = (side, open) => () => {
-        this.setState({
-          [side]: open,
-        });
-      };
+  handleDrawerToggle = () => {
+    this.setState({ mobileOpen: !this.state.mobileOpen });
+  };
 
-      handleOpenModal = () => {
-        this.setState({ open: true });
-      };
+  toggleDrawer = (side, open) => () => {
+    this.setState({
+      [side]: open,
+    });
+  };
 
-      handleCloseModal = () => {
-        this.setState({ open: false });
-      };
+  handleOpenModal = () => {
+    this.setState({ open: true });
+  };
 
-      render() {
-        const { classes } = this.props;
+  handleCloseModal = () => {
+    this.setState({ open: false });
+  };
 
-        const keys = [];
-        const getKeys = (obj) => {
-          Object.keys(obj).forEach((key) => {
-            if (obj[key] && typeof obj[key] === 'object') {
-              keys.push(key);
-            }
-          });
-        };
+  handleSubmit(userID, userRole, currentModule) {
+    console.log('value in component', userID, userRole, currentModule);
+    // UPDATE FIREBASE HERE
+  }
 
-        getKeys(this.props.allUsers);
-        const users = Object.keys(this.props.allUsers).map(user => this.props.allUsers[user]);
+  render() {
+    const { classes } = this.props;
 
-        const userList = (
-          <div>
-            <div className="admin__title">User Administration</div>
-            <div className="admin_description">
-              <ul>
-                <li>Display all users and their details</li>
-                <li>Modify userWeek, role [ user, admin, disabled ]</li>
-                <li>Create email link with unique key for new users</li>
-              </ul>
+    const keys = [];
+    const getKeys = (obj) => {
+      Object.keys(obj).forEach((key) => {
+        if (obj[key] && typeof obj[key] === 'object') {
+          keys.push(key);
+        }
+      });
+    };
 
-              {users.map((user, index) => (
-                <div key={user.email}>
-                  <div>Key:{keys[index]}</div>
-                  <div>Name:{user.displayName}</div>
-                  <div>Email: {user.email}</div>
-                  <UserAdminInput userRole={user.role} userID={keys[index]} email={user.email} currentModule={((Date.now() - user.startDate) / (1000 * 60 * 60 * 24 * 7)).toFixed(0)} />
-                </div>
-                  ))}
+    getKeys(this.props.allUsers);
+    const users = Object.keys(this.props.allUsers).map(user => this.props.allUsers[user]);
+
+    const userList = (
+      <div>
+        <div className="admin__title">User Administration</div>
+        <div className="admin_description">
+          <ul>
+            <li>Display all users and their details</li>
+            <li>Modify userWeek, role [ user, admin, disabled ]</li>
+            <li>Create email link with unique key for new users</li>
+          </ul>
+
+          {users.map((user, index) => (
+            <div key={user.email}>
+              <div>Key:{keys[index]}</div>
+              <div>Name:{user.displayName}</div>
+              <div>Email: {user.email}</div>
+              <UserAdminInput onSubmit={this.handleSubmit} userRole={user.role} userID={keys[index]} email={user.email} currentModule={((Date.now() - user.startDate) / (1000 * 60 * 60 * 24 * 7)).toFixed(0)} />
             </div>
-          </div>
-        );
+                  ))}
+        </div>
+      </div>
+    );
 
-        const contentList = (
-          <div>
-            <div className="admin__title">Content Administration</div>
-            <div className="admin_description">
-              <ul>
-                <li>Display all videos and their details</li>
-                <li>Modify all videos and their details</li>
-              </ul>
-              <ol>
-                {this.props.lessons.map((lesson) => {
+    const contentList = (
+      <div>
+        <div className="admin__title">Content Administration</div>
+        <div className="admin_description">
+          <ul>
+            <li>Display all videos and their details</li>
+            <li>Modify all videos and their details</li>
+          </ul>
+          <ol>
+            {this.props.lessons.map((lesson) => {
                   // convert object to array so we can use .map
                   const mods = Object.keys(lesson.modules).map(item => lesson.modules[item]);
                     return (
@@ -246,32 +262,32 @@ export default class Header extends React.Component { // eslint-disable-line rea
                       </li>
                     );
                 })}
-              </ol>
-            </div>
-          </div>
-        );
+          </ol>
+        </div>
+      </div>
+    );
 
-        const drawer = (
-          <div>
-            <nav className="display-item xxx-mobile">
-              <ProgramMenu lessons={this.props.lessons} userWeek={this.props.userWeek} onSelectModule={this.props.onSelectModule} />
-            </nav>
-          </div>
-        );
-        return (
-          <div style={root}>
-            <AppBar position="static">
-              <Toolbar>
-                <div className="button__menu">
-                  <IconButton style={menuButton} color="inherit" aria-label="Menu" onClick={this.handleDrawerToggle}>
+    const drawer = (
+      <div>
+        <nav className="display-item xxx-mobile">
+          <ProgramMenu lessons={this.props.lessons} userWeek={this.props.userWeek} onSelectModule={this.props.onSelectModule} />
+        </nav>
+      </div>
+    );
+    return (
+      <div style={root}>
+        <AppBar position="static">
+          <Toolbar>
+            <div className="button__menu">
+              <IconButton style={menuButton} color="inherit" aria-label="Menu" onClick={this.handleDrawerToggle}>
                     <i className="material-icons">menu</i>
                   </IconButton>
-                </div>
-                <Typography type="title" gutterBottom color="inherit" style={flex}>
+            </div>
+            <Typography type="title" gutterBottom color="inherit" style={flex}>
                     Create Your Great <span className="desktop">How To Create Your Dream Career</span>
-                </Typography>
-                <div className="controls">
-                  <div className="controls__user">
+            </Typography>
+            <div className="controls">
+              <div className="controls__user">
                     <IconButton><i className="material-icons toolbar" onClick={this.props.resetContent}>home</i></IconButton>
                     <IconButton><i className="material-icons toolbar" onClick={this.handleOpenModal}>help</i></IconButton>
 
@@ -281,63 +297,59 @@ export default class Header extends React.Component { // eslint-disable-line rea
                       <IconButton><i className="material-icons toolbar" style={{ opacity: 0.5 }} onClick={this.props.login}>account_circle</i></IconButton>
                     }
                   </div>
-                  {this.props.role === 'admin' && // need to load user data
+              {this.props.role === 'admin' && // need to load user data
                   <div className="controls__admin">
                     <IconButton><i className="material-icons toolbar" onClick={this.toggleDrawer('user', true)}>supervisor_account</i></IconButton>
                     <IconButton><i className="material-icons toolbar" onClick={this.toggleDrawer('content', true)}>video_library</i></IconButton>
                   </div>
                     }
-                </div>
-              </Toolbar>
-            </AppBar>
+            </div>
+          </Toolbar>
+        </AppBar>
 
-            {/* SUPPORT MODAL */}
-            <SupportModal open={this.state.open} handleOpenModal={this.handleOpenModal} handleCloseModal={this.handleCloseModal} />
+        {/* SUPPORT MODAL */}
+        <SupportModal open={this.state.open} handleOpenModal={this.handleOpenModal} handleCloseModal={this.handleCloseModal} />
 
-            {/* USER ADMIN DRAWER */}
-            <Drawer anchor="right" open={this.state.user} onClose={this.toggleDrawer('user', false)}>
-              <div
-                className="admin users"
-                tabIndex={0}
-                role="button"
-                // onClick={this.toggleDrawer('user', false)}
-                // onKeyDown={this.toggleDrawer('user', false)}
-              >
-                {userList}
-              </div>
-            </Drawer>
+        {/* USER ADMIN DRAWER */}
+        <Drawer anchor="right" open={this.state.user} onClose={this.toggleDrawer('user', false)}>
+          <div
+            className="admin users"
+            tabIndex={0}
+            role="button"
+          >
+            {userList}
+          </div>
+        </Drawer>
 
-            {/* CONTENT ADMIN DRAWER */}
-            <Drawer anchor="right" open={this.state.content} onClose={this.toggleDrawer('content', false)}>
-              <div
-                className="admin modules"
-                tabIndex={0}
-                role="button"
-                // onClick={this.toggleDrawer('content', false)}
-                // onKeyDown={this.toggleDrawer('content', false)}
-              >
-                {contentList}
-              </div>
-            </Drawer>
+        {/* CONTENT ADMIN DRAWER */}
+        <Drawer anchor="right" open={this.state.content} onClose={this.toggleDrawer('content', false)}>
+          <div
+            className="admin modules"
+            tabIndex={0}
+            role="button"
+          >
+            {contentList}
+          </div>
+        </Drawer>
 
-            {/* MOBILE MENU */}
-            <Hidden mdUp>
-              <Drawer
-                type="temporary"
+        {/* MOBILE MENU */}
+        <Hidden mdUp>
+          <Drawer
+            type="temporary"
                     // anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-                open={this.state.mobileOpen}
-                classes={{
+            open={this.state.mobileOpen}
+            classes={{
                         paper: classes.drawerPaper,
                     }}
-                onClose={this.handleDrawerToggle}
-                ModalProps={{
+            onClose={this.handleDrawerToggle}
+            ModalProps={{
                         keepMounted: true, // Better open performance on mobile.
                     }}
-              >
-                {drawer}
-              </Drawer>
-            </Hidden>
-          </div>
-        );
-      }
+          >
+            {drawer}
+          </Drawer>
+        </Hidden>
+      </div>
+    );
+  }
 }
