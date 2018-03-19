@@ -61,6 +61,7 @@ class App extends Component {
           let userWeek = Math.floor(Moment.duration(Moment() - startDate).asWeeks());
           if (userWeek === '0') { userWeek = '1'; }
           if (role === 'admin') { userWeek = '100'; } // ADMIN USERS CAN VIEW ALL CONTENT
+          if (role === 'disabled') { userWeek = '0'; } // ADMIN USERS CAN VIEW ALL CONTENT
           this.setState({
             userWeek,
             role,

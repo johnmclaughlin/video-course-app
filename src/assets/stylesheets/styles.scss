@@ -178,9 +178,15 @@ header .desktop {
   background-color: rgba(0, 0, 0, 0.08);
 }
 
-.MuiPaper-elevation2-13 {
+.admin_description .MuiPaper-elevation2-13 {
   margin: 20px;
   width: 80%;
+  background-color: rgb(255, 255, 255) !important;
+}
+
+.MuiPaper-elevation2-13 {
+  margin: 20px;
+  background-color: rgb(238, 238, 238) !important;
 }
 
 .userAdmin__edit {
@@ -193,5 +199,5 @@ header .desktop {
 }
 
 .MuiDrawer-paperAnchorRight-92 {
-  background-color: rgb(238, 238, 238) !important;
+  background-color: rgb(255, 255, 255) !important;
 }

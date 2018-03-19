@@ -337,6 +337,8 @@ export default class Header extends React.Component { // eslint-disable-line rea
 
     const userList = (
       <div>
+      <Card>
+              <CardContent>
         <Typography variant="display1" gutterBottom><i className="material-icons">supervisor_account</i> User Administration</Typography>
         <div className="admin_description">
           <ul>
@@ -355,6 +357,8 @@ export default class Header extends React.Component { // eslint-disable-line rea
             </Card>
           ))}
         </div>
+        </CardContent>
+            </Card>
       </div>
     );
 
