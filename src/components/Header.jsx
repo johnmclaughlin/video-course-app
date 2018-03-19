@@ -9,6 +9,11 @@ import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui-next/styles';
 import Modal from 'material-ui-next/Modal';
 import Moment from 'moment';
+import TextField from 'material-ui-next/TextField';
+import Select from 'material-ui-next/Select';
+import Button from 'material-ui-next/Button';
+import Input, { InputLabel } from 'material-ui-next/Input';
+import Tooltip from 'material-ui-next/Tooltip';
 import ProgramMenu from './ProgramMenu';
 
 const root = {
@@ -99,9 +104,9 @@ class UserAdminInput extends React.Component {
   }
   handleChange(event) {
     event.preventDefault();
-    const { value, id } = event.target;
-    if (id === 'userRole') { this.setState(() => ({ userRole: value })); }
-    if (id === 'currentModule') { this.setState(() => ({ currentModule: value })); }
+    const { value, name } = event.target;
+    if (name === 'userRole') { this.setState(() => ({ userRole: value })); }
+    if (name === 'currentModule') { this.setState(() => ({ currentModule: value })); }
   }
 
   handleSubmit(event) {
@@ -121,21 +126,20 @@ class UserAdminInput extends React.Component {
         <input type="hidden" value={this.props.userID} />
         <div>
           <label className="header" htmlFor="userRole">Role:
-            <select
-              id="userRole"
+            <Select
+              name="userRole"
               value={userHandler}
               onChange={this.handleChange}
             >
               <option value="user">User</option>
               <option value="admin">Admin</option>
               <option value="disabled">Disabled</option>
-            </select>
+            </Select>
           </label>
-        </div>
-        <div>
+
           <label className="header" htmlFor="userRole">Current Module:
-            <select
-              id="currentModule"
+            <Select
+              name="currentModule"
               value={moduleHandler}
               onChange={this.handleChange}
             >
@@ -148,22 +152,102 @@ class UserAdminInput extends React.Component {
               <option value="6">6</option>
               <option value="7">7</option>
               <option value="8">8</option>
-            </select>
+            </Select>
           </label>
-        </div>
-        <button
-          className="button"
-          type="submit"
-          disabled={!this.props.email}
-        >
-             Update User
-        </button>
+        
+        <Button
+            variant="raised"
+            color="default"
+            className="button"
+            type="submit"
+            // disabled={!this.props.email}
+          >
+              Update {this.props.userName}
+          </Button>
+          </div>
       </form>
+      
     );
   }
 }
 
 /* END USER ADMIN CONTROLS */
+
+/* BEGIN CONTENT ADMIN CONTROLS */
+
+class ContentAdminInput extends React.Component { // eslint-disable-line react/no-multi-comp
+  constructor(props) {
+    super(props);
+    this.state = {
+      moduleID: '',
+      moduleWeek: '',
+      moduleTitle: '',
+    };
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    this.setState({
+      moduleWeek: this.props.moduleWeek,
+      moduleTitle: this.props.moduleTitle,
+    });
+  }
+
+
+  handleChange(event) {
+    event.preventDefault();
+    const { value, id, name } = event.target;
+    if (name) { this.setState(() => ({ moduleWeek: value })); }
+    if (id) { this.setState(() => ({ moduleTitle: value })); }
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+
+    this.props.onSubmit(
+      this.props.moduleID,
+      this.state.moduleWeek,
+      this.state.moduleTitle,
+    );
+  }
+  render() {
+    // const weekHandler = this.state.moduleWeek === '' ? this.props.moduleWeek : this.state.moduleWeek;
+    // const titleHandler = this.state.moduleTitle === '' ? this.props.moduleTitle : this.state.moduleTitle;
+    return (
+      <form className="column" onSubmit={this.handleSubmit}>
+        <input type="hidden" value={this.props.moduleID} />
+        <div>
+          <InputLabel htmlFor="moduleWeek">Module No.</InputLabel>
+          <Select name="Module Number" id="moduleWeek" value={this.state.moduleWeek} onChange={this.handleChange}>
+            <option value={0}>0</option>
+            <option value={1}>1</option>
+            <option value={2}>2</option>
+            <option value={3}>3</option>
+            <option value={4}>4</option>
+            <option value={5}>5</option>
+            <option value={6}>6</option>
+            <option value={7}>7</option>
+            <option value={8}>8</option>
+          </Select>
+          <TextField id="moduleTitle" label="Module Title" margin="normal" value={this.state.moduleTitle} onChange={this.handleChange} />
+          <Button
+            variant="raised"
+            color="default"
+            className="button"
+            type="submit"
+            // disabled={!this.props.email}
+          >
+              Update Module
+          </Button>
+        </div>
+      </form>
+    );
+  }
+}
+
+/* END CONTENT ADMIN CONTROLS */
 
 
 export default class Header extends React.Component { // eslint-disable-line react/no-multi-comp
@@ -232,7 +316,7 @@ export default class Header extends React.Component { // eslint-disable-line rea
               <div>Key:{keys[index]}</div>
               <div>Name:{user.displayName}</div>
               <div>Email: {user.email}</div>
-              <UserAdminInput onSubmit={this.handleSubmit} userRole={user.role} userID={keys[index]} email={user.email} currentModule={((Date.now() - user.startDate) / (1000 * 60 * 60 * 24 * 7)).toFixed(0)} />
+              <UserAdminInput onSubmit={this.handleSubmit} userName={user.displayName} userRole={user.role} userID={keys[index]} email={user.email} currentModule={((Date.now() - user.startDate) / (1000 * 60 * 60 * 24 * 7)).toFixed(0)} />
             </div>
                   ))}
         </div>
@@ -247,12 +331,13 @@ export default class Header extends React.Component { // eslint-disable-line rea
             <li>Display all videos and their details</li>
             <li>Modify all videos and their details</li>
           </ul>
-          <ol>
+          <ul>
             {this.props.lessons.map((lesson) => {
                   // convert object to array so we can use .map
                   const mods = Object.keys(lesson.modules).map(item => lesson.modules[item]);
                     return (
-                      <li key={lesson.title}>{lesson.title}
+                      <li key={lesson.title}>
+                        <ContentAdminInput onSubmit={this.handleSubmit} moduleID={lesson.id} moduleWeek={lesson.week} moduleTitle={lesson.title} />
                         <ol>
                           {mods.map(mod => (
                             <li key={mod.title}>{mod.title}</li>
@@ -262,7 +347,7 @@ export default class Header extends React.Component { // eslint-disable-line rea
                       </li>
                     );
                 })}
-          </ol>
+          </ul>
         </div>
       </div>
     );
@@ -280,28 +365,39 @@ export default class Header extends React.Component { // eslint-disable-line rea
           <Toolbar>
             <div className="button__menu">
               <IconButton style={menuButton} color="inherit" aria-label="Menu" onClick={this.handleDrawerToggle}>
-                    <i className="material-icons">menu</i>
-                  </IconButton>
+                <i className="material-icons">menu</i>
+              </IconButton>
             </div>
             <Typography type="title" gutterBottom color="inherit" style={flex}>
                     Create Your Great <span className="desktop">How To Create Your Dream Career</span>
             </Typography>
             <div className="controls">
               <div className="controls__user">
-                    <IconButton><i className="material-icons toolbar" onClick={this.props.resetContent}>home</i></IconButton>
-                    <IconButton><i className="material-icons toolbar" onClick={this.handleOpenModal}>help</i></IconButton>
-
-                    {this.props.user ?
-                      <IconButton><i className="material-icons toolbar" onClick={this.props.logout}>account_circle</i></IconButton>
+                <Tooltip id="tooltip-icon" title="Home">
+                  <IconButton><i className="material-icons toolbar" onClick={this.props.resetContent}>home</i></IconButton>
+                </Tooltip>
+                <Tooltip id="tooltip-icon" title="Help">
+                  <IconButton><i className="material-icons toolbar" onClick={this.handleOpenModal}>help</i></IconButton>
+                </Tooltip>
+                {this.props.user ?
+                  <Tooltip id="tooltip-icon" title="Logout">
+                    <IconButton><i className="material-icons toolbar" onClick={this.props.logout}>account_circle</i></IconButton>
+                  </Tooltip>
                     :
-                      <IconButton><i className="material-icons toolbar" style={{ opacity: 0.5 }} onClick={this.props.login}>account_circle</i></IconButton>
+                  <Tooltip id="tooltip-icon" title="Login">
+                    <IconButton><i className="material-icons toolbar" style={{ opacity: 0.5 }} onClick={this.props.login}>account_circle</i></IconButton>
+                  </Tooltip>
                     }
-                  </div>
+              </div>
               {this.props.role === 'admin' && // need to load user data
-                  <div className="controls__admin">
-                    <IconButton><i className="material-icons toolbar" onClick={this.toggleDrawer('user', true)}>supervisor_account</i></IconButton>
-                    <IconButton><i className="material-icons toolbar" onClick={this.toggleDrawer('content', true)}>video_library</i></IconButton>
-                  </div>
+              <div className="controls__admin">
+                <Tooltip id="tooltip-icon" title="User Administration">
+                  <IconButton><i className="material-icons toolbar" onClick={this.toggleDrawer('user', true)}>supervisor_account</i></IconButton>
+                </Tooltip>
+                <Tooltip id="tooltip-icon" title="Content Administration">
+                  <IconButton><i className="material-icons toolbar" onClick={this.toggleDrawer('content', true)}>video_library</i></IconButton>
+                </Tooltip>
+              </div>
                     }
             </div>
           </Toolbar>

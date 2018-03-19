@@ -1,5 +1,5 @@
 import React from 'react';
-import Divider from 'material-ui/Divider';
+import Divider from 'material-ui-next/Divider';
 import YouTube from './YouTube';
 
 export default class Content extends React.Component {
