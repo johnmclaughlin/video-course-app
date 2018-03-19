@@ -151,6 +151,11 @@ header .desktop {
 .admin {
   width: 80vw;
 
+  h1 {
+    padding: 20px;
+  }
+  
+
   &.user {
 
   }
@@ -159,10 +164,34 @@ header .desktop {
   }
 }
 
-#tooltip-icon {
-  background-color: #333;
+.tooltips > div {
+  top: -15px !important;
+
+  & > div {
+    color: #132584;
+    background-color: #fff;
+  }
 }
+
 
 .chapter li:hover {
   background-color: rgba(0, 0, 0, 0.08);
+}
+
+.MuiPaper-elevation2-13 {
+  margin: 20px;
+  width: 80%;
+}
+
+.userAdmin__edit {
+  display: flex;
+  justify-content: space-between;
+
+  label {
+    padding-right: 7px;
+  }
+}
+
+.MuiDrawer-paperAnchorRight-92 {
+  background-color: rgb(238, 238, 238) !important;
 }

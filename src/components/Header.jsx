@@ -12,8 +12,10 @@ import Moment from 'moment';
 import TextField from 'material-ui-next/TextField';
 import Select from 'material-ui-next/Select';
 import Button from 'material-ui-next/Button';
-import Input, { InputLabel } from 'material-ui-next/Input';
+import { InputLabel } from 'material-ui-next/Input';
 import Tooltip from 'material-ui-next/Tooltip';
+import Card, { CardContent } from 'material-ui-next/Card';
+import firebase from './firebase';
 import ProgramMenu from './ProgramMenu';
 
 const root = {
@@ -42,6 +44,10 @@ function getModalStyle() {
     top: `${top}%`,
     left: `${left}%`,
     transform: `translate(-${top}%, -${left}%)`,
+    width: '40vw',
+    height: '20vh',
+    textAlign: 'center',
+    minWidth: '240px',
   };
 }
 
@@ -70,8 +76,8 @@ const SimpleModal = (props) => {
         </Typography>
         <Typography variant="subheading" id="simple-modal-description">
           <br />
-            Having trouble?<br />
-            Please send us an email at:<br />
+        Having trouble?<br />
+        Please send us an email at:<br />
           <a href="mailto:support@teaching2lead.com?subject=I'm having trouble with...">support@teaching2lead.com</a>
         </Typography>
       </div>
@@ -90,6 +96,22 @@ const SupportModal = withStyles(styles)(SimpleModal);
 
 /* BEGIN USER ADMIN CONTROLS */
 
+String.prototype.hashCode = function () { // eslint-disable-line no-extend-native
+  let hash = 0,
+    i,
+    chr;
+  if (this.length === 0) return hash;
+  for (i = 0; i < this.length; i++) {
+    chr = this.charCodeAt(i);
+    hash = ((hash << 5) - hash) + chr;
+    hash |= 0; // Convert to 32bit integer
+  }
+  return hash;
+};
+
+const string = 'Scott mclaugh';
+console.log(string, string.hashCode());
+
 class UserAdminInput extends React.Component {
   constructor(props) {
     super(props);
@@ -102,6 +124,7 @@ class UserAdminInput extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
+
   handleChange(event) {
     event.preventDefault();
     const { value, name } = event.target;
@@ -124,8 +147,9 @@ class UserAdminInput extends React.Component {
     return (
       <form className="column" onSubmit={this.handleSubmit}>
         <input type="hidden" value={this.props.userID} />
-        <div>
-          <label className="header" htmlFor="userRole">Role:
+        <div className="userAdmin__edit">
+          <div>
+            <InputLabel htmlFor="userRole" shrink>Role:</InputLabel>
             <Select
               name="userRole"
               value={userHandler}
@@ -135,9 +159,9 @@ class UserAdminInput extends React.Component {
               <option value="admin">Admin</option>
               <option value="disabled">Disabled</option>
             </Select>
-          </label>
-
-          <label className="header" htmlFor="userRole">Current Module:
+          </div>
+          <div>
+            <InputLabel htmlFor="currentModule" shrink>Current Module:</InputLabel>
             <Select
               name="currentModule"
               value={moduleHandler}
@@ -153,20 +177,18 @@ class UserAdminInput extends React.Component {
               <option value="7">7</option>
               <option value="8">8</option>
             </Select>
-          </label>
-        
-        <Button
+          </div>
+          <Button
             variant="raised"
             color="default"
             className="button"
             type="submit"
-            // disabled={!this.props.email}
           >
               Update {this.props.userName}
           </Button>
-          </div>
+        </div>
       </form>
-      
+
     );
   }
 }
@@ -281,9 +303,21 @@ export default class Header extends React.Component { // eslint-disable-line rea
     this.setState({ open: false });
   };
 
-  handleSubmit(userID, userRole, currentModule) {
-    console.log('value in component', userID, userRole, currentModule);
-    // UPDATE FIREBASE HERE
+  handleSubmit(userID, userRole, currentModule) {  // eslint-disable-line 
+    const updateUser = firebase.database().ref(`users/${userID}`);
+    updateUser.on('value', (snapshot) => {
+    });
+    if (userRole) {
+      updateUser.update({
+        role: userRole,
+      });
+    }
+    if (currentModule) {
+      const newDate = Moment().startOf('day').subtract(currentModule, 'weeks').format('x');
+      updateUser.update({
+        startDate: newDate,
+      });
+    }
   }
 
   render() {
@@ -303,22 +337,23 @@ export default class Header extends React.Component { // eslint-disable-line rea
 
     const userList = (
       <div>
-        <div className="admin__title">User Administration</div>
+        <Typography variant="display1" gutterBottom><i className="material-icons">supervisor_account</i> User Administration</Typography>
         <div className="admin_description">
           <ul>
-            <li>Display all users and their details</li>
-            <li>Modify userWeek, role [ user, admin, disabled ]</li>
             <li>Create email link with unique key for new users</li>
           </ul>
 
           {users.map((user, index) => (
-            <div key={user.email}>
-              <div>Key:{keys[index]}</div>
-              <div>Name:{user.displayName}</div>
-              <div>Email: {user.email}</div>
-              <UserAdminInput onSubmit={this.handleSubmit} userName={user.displayName} userRole={user.role} userID={keys[index]} email={user.email} currentModule={((Date.now() - user.startDate) / (1000 * 60 * 60 * 24 * 7)).toFixed(0)} />
-            </div>
-                  ))}
+            <Card key={index}>
+              <CardContent>
+                <div key={user.email}>
+                  <Typography variant="title" gutterBottom>{user.displayName}</Typography>
+                  <Typography variant="subheading" gutterBottom>{user.email}</Typography>
+                  <UserAdminInput onSubmit={this.handleSubmit} userName={user.displayName} userRole={user.role} userID={keys[index]} email={user.email} currentModule={((Date.now() - user.startDate) / (1000 * 60 * 60 * 24 * 7)).toFixed(0)} />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </div>
     );
@@ -373,28 +408,28 @@ export default class Header extends React.Component { // eslint-disable-line rea
             </Typography>
             <div className="controls">
               <div className="controls__user">
-                <Tooltip id="tooltip-icon" title="Home">
+                <Tooltip id="tooltip-home" className="tooltips" title="Home">
                   <IconButton><i className="material-icons toolbar" onClick={this.props.resetContent}>home</i></IconButton>
                 </Tooltip>
-                <Tooltip id="tooltip-icon" title="Help">
+                <Tooltip id="tooltip-help" className="tooltips" title="Help">
                   <IconButton><i className="material-icons toolbar" onClick={this.handleOpenModal}>help</i></IconButton>
                 </Tooltip>
                 {this.props.user ?
-                  <Tooltip id="tooltip-icon" title="Logout">
+                  <Tooltip id="tooltip-logout" className="tooltips" title="Logout">
                     <IconButton><i className="material-icons toolbar" onClick={this.props.logout}>account_circle</i></IconButton>
                   </Tooltip>
                     :
-                  <Tooltip id="tooltip-icon" title="Login">
+                  <Tooltip id="tooltip-login" className="tooltips" title="Login">
                     <IconButton><i className="material-icons toolbar" style={{ opacity: 0.5 }} onClick={this.props.login}>account_circle</i></IconButton>
                   </Tooltip>
                     }
               </div>
               {this.props.role === 'admin' && // need to load user data
               <div className="controls__admin">
-                <Tooltip id="tooltip-icon" title="User Administration">
+                <Tooltip id="tooltip-user" className="tooltips" title="User Administration">
                   <IconButton><i className="material-icons toolbar" onClick={this.toggleDrawer('user', true)}>supervisor_account</i></IconButton>
                 </Tooltip>
-                <Tooltip id="tooltip-icon" title="Content Administration">
+                <Tooltip id="tooltip-content" className="tooltips" title="Content Administration">
                   <IconButton><i className="material-icons toolbar" onClick={this.toggleDrawer('content', true)}>video_library</i></IconButton>
                 </Tooltip>
               </div>
