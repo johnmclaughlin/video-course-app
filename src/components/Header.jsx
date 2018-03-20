@@ -76,7 +76,7 @@ export default class Header extends React.Component { // eslint-disable-line rea
       });
     }
     if (currentModule) {
-      const newDate = Moment().startOf('day').subtract(currentModule, 'weeks').format('x');
+      const newDate = Moment().startOf('day').subtract(currentModule, 'weeks').format('LLL');
       updateUser.update({
         startDate: newDate,
       });
@@ -114,8 +114,9 @@ export default class Header extends React.Component { // eslint-disable-line rea
                 <div key={user.email}>
                   <Typography variant="title" gutterBottom>{user.displayName}</Typography>
                   <Typography variant="subheading" gutterBottom>{user.email}</Typography>
-                  <Typography variant="body1" gutterBottom>Start Date: {Moment(user.origDate).format('LLL')}</Typography>
-                  <UserAdminInput onSubmit={this.handleSubmit} userName={user.displayName} userRole={user.role} userID={keys[index]} email={user.email} currentModule={((Date.now() - user.startDate) / (1000 * 60 * 60 * 24 * 7)).toFixed(0)} />
+                  <Typography variant="body1" gutterBottom>Start Date: {Moment(user.origDate, 'LLL').format('LLL')}</Typography>
+                  <Typography variant="body1" gutterBottom>Original Date: {Moment(user.startDate, 'LLL').format('LLL')}</Typography>
+                  <UserAdminInput onSubmit={this.handleSubmit} userName={user.displayName} userRole={user.role} userID={keys[index]} email={user.email} currentModule={(Math.floor(Moment.duration(Moment().startOf('day') - Moment(user.startDate, 'LLL')).asWeeks())) + 1} />
                 </div>
               </CardContent>
             </Card>

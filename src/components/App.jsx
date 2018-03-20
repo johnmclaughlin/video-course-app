@@ -52,14 +52,13 @@ class App extends Component {
           usersRef.set({
             email: user.email,
             displayName: user.displayName,
-            startDate: Moment().startOf('day').format('x'),
-            origDate: Moment().startOf('day').format('x'),
+            startDate: Moment().startOf('day').format('LLL'),
+            origDate: Moment().startOf('day').format('LLL'),
             role: 'user',
           });
         } else {
           const { role, startDate } = snapshot.val();
-          let userWeek = Math.floor(Moment.duration(Moment() - startDate).asWeeks());
-          if (userWeek === '0') { userWeek = '1'; }
+          let userWeek = (Math.floor(Moment.duration(Moment().startOf('day') - Moment(startDate, 'LLL')).asWeeks())) + 1;
           if (role === 'admin') { userWeek = '100'; } // ADMIN USERS CAN VIEW ALL CONTENT
           if (role === 'disabled') { userWeek = '0'; } // ADMIN USERS CAN VIEW ALL CONTENT
           this.setState({
