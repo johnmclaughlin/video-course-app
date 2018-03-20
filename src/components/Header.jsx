@@ -115,7 +115,7 @@ export default class Header extends React.Component { // eslint-disable-line rea
                   <Typography variant="title" gutterBottom>{user.displayName}</Typography>
                   <Typography variant="subheading" gutterBottom>{user.email}</Typography>
                   <Typography variant="body1" gutterBottom>Start Date: {Moment(user.origDate, 'LLL').format('LLL')}</Typography>
-                  <Typography variant="body1" gutterBottom>Original Date: {Moment(user.startDate, 'LLL').format('LLL')}</Typography>
+                  <Typography variant="body1" gutterBottom>Override Content Module: {Moment(user.startDate, 'LLL').format('LLL')}</Typography>
                   <UserAdminInput onSubmit={this.handleSubmit} userName={user.displayName} userRole={user.role} userID={keys[index]} email={user.email} currentModule={(Math.floor(Moment.duration(Moment().startOf('day') - Moment(user.startDate, 'LLL')).asWeeks())) + 1} />
                 </div>
               </CardContent>
