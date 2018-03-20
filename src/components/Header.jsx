@@ -6,17 +6,14 @@ import IconButton from 'material-ui-next/IconButton';
 import Hidden from 'material-ui-next/Hidden';
 import Drawer from 'material-ui-next/Drawer';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui-next/styles';
-import Modal from 'material-ui-next/Modal';
 import Moment from 'moment';
-import TextField from 'material-ui-next/TextField';
-import Select from 'material-ui-next/Select';
-import Button from 'material-ui-next/Button';
-import { InputLabel } from 'material-ui-next/Input';
 import Tooltip from 'material-ui-next/Tooltip';
 import Card, { CardContent } from 'material-ui-next/Card';
 import firebase from './firebase';
 import ProgramMenu from './ProgramMenu';
+import SupportModal from './SupportModal';
+import UserAdminInput from './UserAdminInput';
+import ContentAdminInput from './ContentAdminInput';
 
 const root = {
   marginTop: '0',
@@ -34,244 +31,6 @@ const menuButton = {
   marginRight: 20,
 };
 
-/* BEGIN SUPPORT MODAL */
-
-function getModalStyle() {
-  const top = 50;
-  const left = 50;
-
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`,
-    width: '40vw',
-    height: '20vh',
-    textAlign: 'center',
-    minWidth: '240px',
-  };
-}
-
-const styles = theme => ({
-  paper: {
-    position: 'absolute',
-    width: theme.spacing.unit * 25,
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing.unit * 4,
-  },
-});
-
-const SimpleModal = (props) => {
-  const { classes } = props;
-  return (
-    <Modal
-      aria-labelledby="Support"
-      aria-describedby="Contact information for support"
-      open={props.open}
-      onClose={props.handleCloseModal}
-    >
-      <div style={getModalStyle()} className={classes.paper}>
-        <Typography variant="title" id="modal-title">
-          {'We\'re here to help!'}
-        </Typography>
-        <Typography variant="subheading" id="simple-modal-description">
-          <br />
-        Having trouble?<br />
-        Please send us an email at:<br />
-          <a href="mailto:support@teaching2lead.com?subject=I'm having trouble with...">support@teaching2lead.com</a>
-        </Typography>
-      </div>
-    </Modal>
-  );
-};
-
-SimpleModal.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
-// We need an intermediary variable for handling the recursive nesting.
-const SupportModal = withStyles(styles)(SimpleModal);
-
-/* END SUPPORT MODAL */
-
-/* BEGIN USER ADMIN CONTROLS */
-
-String.prototype.hashCode = function () { // eslint-disable-line no-extend-native
-  let hash = 0,
-    i,
-    chr;
-  if (this.length === 0) return hash;
-  for (i = 0; i < this.length; i++) {
-    chr = this.charCodeAt(i);
-    hash = ((hash << 5) - hash) + chr;
-    hash |= 0; // Convert to 32bit integer
-  }
-  return hash;
-};
-
-const string = 'Scott mclaugh';
-console.log(string, string.hashCode());
-
-class UserAdminInput extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      userID: '',
-      userRole: '',
-      currentModule: '',
-    };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  handleChange(event) {
-    event.preventDefault();
-    const { value, name } = event.target;
-    if (name === 'userRole') { this.setState(() => ({ userRole: value })); }
-    if (name === 'currentModule') { this.setState(() => ({ currentModule: value })); }
-  }
-
-  handleSubmit(event) {
-    event.preventDefault();
-
-    this.props.onSubmit(
-      this.props.userID,
-      this.state.userRole,
-      this.state.currentModule,
-    );
-  }
-  render() {
-    const userHandler = this.state.userRole === '' ? this.props.userRole : this.state.userRole;
-    const moduleHandler = this.state.currentModule === '' ? this.props.currentModule : this.state.currentModule;
-    return (
-      <form className="column" onSubmit={this.handleSubmit}>
-        <input type="hidden" value={this.props.userID} />
-        <div className="userAdmin__edit">
-          <div>
-            <InputLabel htmlFor="userRole" shrink>Role:</InputLabel>
-            <Select
-              name="userRole"
-              value={userHandler}
-              onChange={this.handleChange}
-            >
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
-              <option value="disabled">Disabled</option>
-            </Select>
-          </div>
-          <div>
-            <InputLabel htmlFor="currentModule" shrink>Current Module:</InputLabel>
-            <Select
-              name="currentModule"
-              value={moduleHandler}
-              onChange={this.handleChange}
-            >
-              <option value="0">0</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-            </Select>
-          </div>
-          <Button
-            variant="raised"
-            color="default"
-            className="button"
-            type="submit"
-          >
-              Update {this.props.userName}
-          </Button>
-        </div>
-      </form>
-
-    );
-  }
-}
-
-/* END USER ADMIN CONTROLS */
-
-/* BEGIN CONTENT ADMIN CONTROLS */
-
-class ContentAdminInput extends React.Component { // eslint-disable-line react/no-multi-comp
-  constructor(props) {
-    super(props);
-    this.state = {
-      moduleID: '',
-      moduleWeek: '',
-      moduleTitle: '',
-    };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  componentDidMount() {
-    this.setState({
-      moduleWeek: this.props.moduleWeek,
-      moduleTitle: this.props.moduleTitle,
-    });
-  }
-
-
-  handleChange(event) {
-    event.preventDefault();
-    const { value, id, name } = event.target;
-    if (name) { this.setState(() => ({ moduleWeek: value })); }
-    if (id) { this.setState(() => ({ moduleTitle: value })); }
-  }
-
-  handleSubmit(event) {
-    event.preventDefault();
-
-    this.props.onSubmit(
-      this.props.moduleID,
-      this.state.moduleWeek,
-      this.state.moduleTitle,
-    );
-  }
-  render() {
-    // const weekHandler = this.state.moduleWeek === '' ? this.props.moduleWeek : this.state.moduleWeek;
-    // const titleHandler = this.state.moduleTitle === '' ? this.props.moduleTitle : this.state.moduleTitle;
-    return (
-      <form className="column" onSubmit={this.handleSubmit}>
-        <input type="hidden" value={this.props.moduleID} />
-        <div>
-          <InputLabel htmlFor="moduleWeek">Module No.</InputLabel>
-          <Select name="Module Number" id="moduleWeek" value={this.state.moduleWeek} onChange={this.handleChange}>
-            <option value={0}>0</option>
-            <option value={1}>1</option>
-            <option value={2}>2</option>
-            <option value={3}>3</option>
-            <option value={4}>4</option>
-            <option value={5}>5</option>
-            <option value={6}>6</option>
-            <option value={7}>7</option>
-            <option value={8}>8</option>
-          </Select>
-          <TextField id="moduleTitle" label="Module Title" margin="normal" value={this.state.moduleTitle} onChange={this.handleChange} />
-          <Button
-            variant="raised"
-            color="default"
-            className="button"
-            type="submit"
-            // disabled={!this.props.email}
-          >
-              Update Module
-          </Button>
-        </div>
-      </form>
-    );
-  }
-}
-
-/* END CONTENT ADMIN CONTROLS */
-
-
 export default class Header extends React.Component { // eslint-disable-line react/no-multi-comp
   constructor(props) {
     super(props);
@@ -280,6 +39,10 @@ export default class Header extends React.Component { // eslint-disable-line rea
       open: false,
       user: false,
       content: false,
+      siteTitle: 'Create Your Great',
+      siteTagline: 'How to create your dream career',
+      supportTitle: 'We\'re here to help!',
+      supportEmail: 'support@teaching2lead.com',
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -346,11 +109,12 @@ export default class Header extends React.Component { // eslint-disable-line rea
           </ul>
 
           {users.map((user, index) => (
-            <Card key={index}>
+            <Card key={index} className={user.role}>
               <CardContent>
                 <div key={user.email}>
                   <Typography variant="title" gutterBottom>{user.displayName}</Typography>
                   <Typography variant="subheading" gutterBottom>{user.email}</Typography>
+                  <Typography variant="body1" gutterBottom>Start Date: {Moment(user.origDate).format('LLL')}</Typography>
                   <UserAdminInput onSubmit={this.handleSubmit} userName={user.displayName} userRole={user.role} userID={keys[index]} email={user.email} currentModule={((Date.now() - user.startDate) / (1000 * 60 * 60 * 24 * 7)).toFixed(0)} />
                 </div>
               </CardContent>
@@ -408,7 +172,7 @@ export default class Header extends React.Component { // eslint-disable-line rea
               </IconButton>
             </div>
             <Typography type="title" gutterBottom color="inherit" style={flex}>
-                    Create Your Great <span className="desktop">How To Create Your Dream Career</span>
+                    {this.state.siteTitle}<span className="desktop">{this.state.siteTagline}</span>
             </Typography>
             <div className="controls">
               <div className="controls__user">
@@ -443,7 +207,13 @@ export default class Header extends React.Component { // eslint-disable-line rea
         </AppBar>
 
         {/* SUPPORT MODAL */}
-        <SupportModal open={this.state.open} handleOpenModal={this.handleOpenModal} handleCloseModal={this.handleCloseModal} />
+        <SupportModal
+          open={this.state.open}
+          handleOpenModal={this.handleOpenModal}
+          handleCloseModal={this.handleCloseModal}
+          supportTitle={this.state.supportTitle}
+          supportEmail={this.state.supportEmail}
+        />
 
         {/* USER ADMIN DRAWER */}
         <Drawer anchor="right" open={this.state.user} onClose={this.toggleDrawer('user', false)}>

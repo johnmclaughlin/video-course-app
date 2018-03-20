@@ -178,6 +178,10 @@ header .desktop {
   background-color: rgba(0, 0, 0, 0.08);
 }
 
+.admin_description .admin > div {
+  background-color: #f3f3f3 !important;
+}
+
 .admin_description .MuiPaper-elevation2-13 {
   margin: 20px;
   width: 80%;
@@ -185,7 +189,7 @@ header .desktop {
 }
 
 .MuiPaper-elevation2-13 {
-  margin: 20px;
+  margin: 10px;
   background-color: rgb(238, 238, 238) !important;
 }
 
