@@ -9,6 +9,8 @@ import PropTypes from 'prop-types';
 import Moment from 'moment';
 import Tooltip from 'material-ui-next/Tooltip';
 import Card, { CardContent } from 'material-ui-next/Card';
+import ExpansionPanel, { ExpansionPanelSummary, ExpansionPanelDetails } from 'material-ui-next/ExpansionPanel';
+import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 import firebase from './firebase';
 import ProgramMenu from './ProgramMenu';
 import SupportModal from './SupportModal';
@@ -100,16 +102,16 @@ export default class Header extends React.Component { // eslint-disable-line rea
 
     const userList = (
       <div>
-      <Card>
-              <CardContent>
-        <Typography variant="display1" gutterBottom><i className="material-icons">supervisor_account</i> User Administration</Typography>
-        <div className="admin_description">
-          <ul>
-            <li>Create email link with unique key for new users</li>
-          </ul>
+        <Card>
+          <CardContent>
+            <Typography variant="display1" gutterBottom><i className="material-icons">supervisor_account</i> User Administration</Typography>
+            <div className="admin_description">
+            <ul>
+                    <li>Create email link with unique key for new users</li>
+                  </ul>
 
-          {users.map((user, index) => (
-            <Card key={index} className={user.role}>
+            {users.map((user, index) => (
+                    <Card key={index} className={user.role}>
               <CardContent>
                 <div key={user.email}>
                   <Typography variant="title" gutterBottom>{user.displayName}</Typography>
@@ -121,9 +123,9 @@ export default class Header extends React.Component { // eslint-disable-line rea
               </CardContent>
             </Card>
           ))}
-        </div>
-        </CardContent>
-            </Card>
+          </div>
+          </CardContent>
+        </Card>
       </div>
     );
 
@@ -140,15 +142,20 @@ export default class Header extends React.Component { // eslint-disable-line rea
                   // convert object to array so we can use .map
                   const mods = Object.keys(lesson.modules).map(item => lesson.modules[item]);
                     return (
-                      <li key={lesson.title}>
-                        <ContentAdminInput onSubmit={this.handleSubmit} moduleID={lesson.id} moduleWeek={lesson.week} moduleTitle={lesson.title} />
-                        <ol>
-                          {mods.map(mod => (
-                            <li key={mod.title}>{mod.title}</li>
-                            ))
-                          }
-                        </ol>
-                      </li>
+                      <ExpansionPanel key ={lesson.title}>
+                        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                          <Typography>{lesson.title}</Typography>
+                        </ExpansionPanelSummary>
+                        <ExpansionPanelDetails>
+                          <ContentAdminInput onSubmit={this.handleSubmit} moduleID={lesson.id} moduleWeek={lesson.week} moduleTitle={lesson.title} />
+                          <ol>
+                            {mods.map(mod => (
+                              <li key={mod.title}>{mod.title}</li>
+                                ))
+                              }
+                          </ol>
+                        </ExpansionPanelDetails>
+                      </ExpansionPanel>
                     );
                 })}
           </ul>
@@ -173,7 +180,7 @@ export default class Header extends React.Component { // eslint-disable-line rea
               </IconButton>
             </div>
             <Typography type="title" gutterBottom color="inherit" style={flex}>
-                    {this.state.siteTitle}<span className="desktop">{this.state.siteTagline}</span>
+              {this.state.siteTitle}<span className="desktop">{this.state.siteTagline}</span>
             </Typography>
             <div className="controls">
               <div className="controls__user">
