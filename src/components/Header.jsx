@@ -9,13 +9,11 @@ import PropTypes from 'prop-types';
 import Moment from 'moment';
 import Tooltip from 'material-ui-next/Tooltip';
 import Card, { CardContent } from 'material-ui-next/Card';
-import ExpansionPanel, { ExpansionPanelSummary, ExpansionPanelDetails } from 'material-ui-next/ExpansionPanel';
-import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 import firebase from './firebase';
 import ProgramMenu from './ProgramMenu';
 import SupportModal from './SupportModal';
 import UserAdminInput from './UserAdminInput';
-import ContentAdminInput from './ContentAdminInput';
+import SiteContentAdminInput from './SiteContentAdminInput';
 
 const root = {
   marginTop: '0',
@@ -26,14 +24,14 @@ const flex = {
   fontSize: '3vw',
   marginTop: '1vw',
   fontFamily: 'Crimson Text',
-  textTransform: 'uppercase',
+  textTransform: 'none',
 };
 const menuButton = {
   marginLeft: -12,
   marginRight: 20,
 };
 
-export default class Header extends React.Component { // eslint-disable-line react/no-multi-comp
+export default class Header extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -41,10 +39,6 @@ export default class Header extends React.Component { // eslint-disable-line rea
       open: false,
       user: false,
       content: false,
-      siteTitle: 'Create Your Great',
-      siteTagline: 'How to create your dream career',
-      supportTitle: 'We\'re here to help!',
-      supportEmail: 'support@teaching2lead.com',
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -70,19 +64,35 @@ export default class Header extends React.Component { // eslint-disable-line rea
 
   handleSubmit(userID, userRole, currentModule) {  // eslint-disable-line 
     const updateUser = firebase.database().ref(`users/${userID}`);
-    updateUser.on('value', (snapshot) => {
-    });
     if (userRole) {
       updateUser.update({
         role: userRole,
       });
     }
     if (currentModule) {
-      const newDate = Moment().startOf('day').subtract(currentModule, 'weeks').format('LLL');
+      const newDate = Moment().startOf('day').subtract(currentModule, 'days').format('LLL');
       updateUser.update({
         startDate: newDate,
       });
     }
+  }
+
+  handleSiteContentSubmit(siteTitle, siteTagline, supportTitle, supportEmail, authTitle, authSubtitle, authDescription, authVideoRef, contentTitle, contentSubtitle, contentDescription, contentVideoRef) {  // eslint-disable-line 
+    const updateSiteContent = firebase.database().ref('site');
+    updateSiteContent.update({
+      siteTitle,
+      siteTagline,
+      supportTitle,
+      supportEmail,
+      authTitle,
+      authSubtitle,
+      authDescription,
+      authVideoRef,
+      contentTitle,
+      contentSubtitle,
+      contentDescription,
+      contentVideoRef,
+    });
   }
 
   render() {
@@ -109,15 +119,14 @@ export default class Header extends React.Component { // eslint-disable-line rea
               <ul>
                 <li>Create email link with unique key for new users</li>
               </ul>
-
               {users.map((user, index) => (
-                <Card key={index} className={user.role}>
+                <Card key={user.email} className={user.role}>
                   <CardContent>
                     <div key={user.email}>
                       <Typography variant="title" gutterBottom>{user.displayName}</Typography>
                       <Typography variant="subheading" gutterBottom>{user.email}</Typography>
                       <Typography variant="body1" gutterBottom>Start Date: {Moment(user.origDate, 'LLL').format('LLL')}</Typography>
-                      <Typography variant="body1" gutterBottom>Override Content Module: {Moment(user.startDate, 'LLL').format('LLL')}</Typography>
+                      <Typography variant="body1" gutterBottom>Override Current Module: {Moment(user.startDate, 'LLL').format('LLL')}</Typography>
                       <UserAdminInput onSubmit={this.handleSubmit} userName={user.displayName} userRole={user.role} userID={keys[index]} email={user.email} currentModule={(Math.floor(Moment.duration(Moment().startOf('day') - Moment(user.startDate, 'LLL')).asWeeks())) + 1} />
                     </div>
                   </CardContent>
@@ -130,47 +139,41 @@ export default class Header extends React.Component { // eslint-disable-line rea
     );
 
     const contentList = (
-      <div>
-        <Card>
-          <CardContent>
-            <Typography variant="display1" gutterBottom><i className="material-icons">video_library</i> Content Administration</Typography>
-            <div className="admin_description">
-          <ul>
-            <li>Display all videos and their details</li>
-            <li>Modify all videos and their details</li>
-          </ul>
-          <ul>
-            {this.props.lessons.map((lesson) => {
-                  // convert object to array so we can use .map
-                  const mods = Object.keys(lesson.modules).map(item => lesson.modules[item]);
-                    return (
-                      <ExpansionPanel key={lesson.title}>
-                        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                          <Typography>{lesson.title}</Typography>
-                        </ExpansionPanelSummary>
-                        <ExpansionPanelDetails>
-                          <ContentAdminInput onSubmit={this.handleSubmit} moduleID={lesson.id} moduleWeek={lesson.week} moduleTitle={lesson.title} />
-                          <ol>
-                            {mods.map(mod => (
-                              <li key={mod.title}>{mod.title}</li>
-                                ))
-                              }
-                          </ol>
-                        </ExpansionPanelDetails>
-                      </ExpansionPanel>
-                    );
-                })}
-          </ul>
-        </div>
-          </CardContent>
-        </Card>
-      </div>
+      <Card>
+        <CardContent>
+          <Typography variant="display1" gutterBottom><i className="material-icons">video_library</i> Content Administration</Typography>
+          <div className="admin_description">
+            <SiteContentAdminInput
+              onSubmit={this.handleSiteContentSubmit}
+              siteTitle={this.props.siteTitle}
+              siteTagline={this.props.siteTagline}
+              supportTitle={this.props.supportTitle}
+              supportEmail={this.props.supportEmail}
+              authTitle={this.props.authTitle}
+              authSubtitle={this.props.authSubtitle}
+              authDescription={this.props.authDescription}
+              authVideoRef={this.props.authVideoRef}
+              contentTitle={this.props.contentTitle}
+              contentSubtitle={this.props.contentSubtitle}
+              contentDescription={this.props.contentDescription}
+              contentVideoRef={this.props.contentVideoRef}
+              lessons={this.props.lessons}
+            />
+          </div>
+        </CardContent>
+      </Card>
     );
 
     const drawer = (
       <div>
-        <nav className="display-item xxx-mobile">
-          <ProgramMenu lessons={this.props.lessons} userWeek={this.props.userWeek} onSelectModule={this.props.onSelectModule} />
+        <nav className="display-item mobile">
+          <ProgramMenu
+            lessons={this.props.lessons}
+            userWeek={this.props.userWeek}
+            onSelectModule={this.props.onSelectModule}
+            user={this.state.user}
+            progress={this.props.progress}
+          />
         </nav>
       </div>
     );
@@ -184,33 +187,33 @@ export default class Header extends React.Component { // eslint-disable-line rea
               </IconButton>
             </div>
             <Typography type="title" gutterBottom color="inherit" style={flex}>
-              {this.state.siteTitle}<span className="desktop">{this.state.siteTagline}</span>
+              {this.props.siteTitle}<span className="desktop">{this.props.siteTagline}</span>
             </Typography>
             <div className="controls">
               <div className="controls__user">
                 <Tooltip id="tooltip-home" className="tooltips" title="Home">
-                  <IconButton><i className="material-icons toolbar" onClick={this.props.resetContent}>home</i></IconButton>
+                  <IconButton><i className="material-icons toolbar" onClick={this.props.resetContent} onKeyDown={this.props.resetContent} role="button" tabIndex={0}>home</i></IconButton>
                 </Tooltip>
                 <Tooltip id="tooltip-help" className="tooltips" title="Help">
-                  <IconButton><i className="material-icons toolbar" onClick={this.handleOpenModal}>help</i></IconButton>
+                  <IconButton><i className="material-icons toolbar" onClick={this.handleOpenModal} onKeyDown={this.handleOpenModal} role="button" tabIndex={0}>help</i></IconButton>
                 </Tooltip>
                 {this.props.user ?
                   <Tooltip id="tooltip-logout" className="tooltips" title="Logout">
-                    <IconButton><i className="material-icons toolbar" onClick={this.props.logout}>account_circle</i></IconButton>
+                    <IconButton><i className="material-icons toolbar" onClick={this.props.logout} onKeyDown={this.props.logout} role="button" tabIndex={0}>account_circle</i></IconButton>
                   </Tooltip>
                     :
                   <Tooltip id="tooltip-login" className="tooltips" title="Login">
-                    <IconButton><i className="material-icons toolbar" style={{ opacity: 0.5 }} onClick={this.props.login}>account_circle</i></IconButton>
+                    <IconButton><i className="material-icons toolbar" style={{ opacity: 0.5 }} onClick={this.props.login} onKeyDown={this.props.login} role="button" tabIndex={0}>account_circle</i></IconButton>
                   </Tooltip>
                     }
               </div>
               {this.props.role === 'admin' && // need to load user data
               <div className="controls__admin">
                 <Tooltip id="tooltip-user" className="tooltips" title="User Administration">
-                  <IconButton><i className="material-icons toolbar" onClick={this.toggleDrawer('user', true)}>supervisor_account</i></IconButton>
+                  <IconButton><i className="material-icons toolbar" onClick={this.toggleDrawer('user', true)} onKeyDown={this.toggleDrawer('user', true)} role="button" tabIndex={0}>supervisor_account</i></IconButton>
                 </Tooltip>
                 <Tooltip id="tooltip-content" className="tooltips" title="Content Administration">
-                  <IconButton><i className="material-icons toolbar" onClick={this.toggleDrawer('content', true)}>video_library</i></IconButton>
+                  <IconButton><i className="material-icons toolbar" onClick={this.toggleDrawer('content', true)} onKeyDown={this.toggleDrawer('content', true)} role="button" tabIndex={0}>video_library</i></IconButton>
                 </Tooltip>
               </div>
                     }
@@ -223,8 +226,8 @@ export default class Header extends React.Component { // eslint-disable-line rea
           open={this.state.open}
           handleOpenModal={this.handleOpenModal}
           handleCloseModal={this.handleCloseModal}
-          supportTitle={this.state.supportTitle}
-          supportEmail={this.state.supportEmail}
+          supportTitle={this.props.supportTitle}
+          supportEmail={this.props.supportEmail}
         />
 
         {/* USER ADMIN DRAWER */}
@@ -253,7 +256,6 @@ export default class Header extends React.Component { // eslint-disable-line rea
         <Hidden mdUp>
           <Drawer
             type="temporary"
-                    // anchor={theme.direction === 'rtl' ? 'right' : 'left'}
             open={this.state.mobileOpen}
             classes={{
                         paper: classes.drawerPaper,
@@ -270,3 +272,29 @@ export default class Header extends React.Component { // eslint-disable-line rea
     );
   }
 }
+
+Header.propTypes = {
+  classes: PropTypes.object.isRequired, // eslint-disable-line
+  allUsers: PropTypes.object.isRequired, // eslint-disable-line
+  lessons: PropTypes.array.isRequired, // eslint-disable-line
+  user: PropTypes.object.isRequired, // eslint-disable-line
+  onSelectModule: PropTypes.func.isRequired,
+  resetContent: PropTypes.func.isRequired,
+  logout: PropTypes.func.isRequired,
+  login: PropTypes.func.isRequired,
+  siteTitle: PropTypes.string.isRequired,
+  siteTagline: PropTypes.string.isRequired,
+  supportTitle: PropTypes.string.isRequired,
+  supportEmail: PropTypes.string.isRequired,
+  authTitle: PropTypes.string.isRequired,
+  authSubtitle: PropTypes.string.isRequired,
+  authDescription: PropTypes.string.isRequired,
+  authVideoRef: PropTypes.string.isRequired,
+  contentTitle: PropTypes.string.isRequired,
+  contentSubtitle: PropTypes.string.isRequired,
+  contentDescription: PropTypes.string.isRequired,
+  contentVideoRef: PropTypes.string.isRequired,
+  userWeek: PropTypes.number.isRequired,
+  role: PropTypes.string.isRequired,
+  progress: PropTypes.object.isRequired, // eslint-disable-line
+};

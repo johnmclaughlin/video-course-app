@@ -27,6 +27,10 @@ header .controls {
 nav {
   width: 100%;
 
+  &.mobile {
+    max-width: 85vw;
+  }
+
   &.desktop {
     display: none;
 
@@ -38,7 +42,6 @@ nav {
   
   & > div:first-of-type {
     background: white;
-    // box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
     border-radius: 2px;
   }
   ul {
@@ -118,6 +121,10 @@ nav {
     background: white;
     box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px;
     border-radius: 2px;
+
+    > div > div {
+      margin-top: 20px;
+    }
   }
 
   h2 {
@@ -154,14 +161,6 @@ header .desktop {
   h1 {
     padding: 20px;
   }
-  
-
-  &.user {
-
-  }
-  &.content {
-
-  }
 }
 
 .tooltips > div {
@@ -182,15 +181,26 @@ header .desktop {
   background-color: #f3f3f3 !important;
 }
 
-.admin_description .MuiPaper-elevation2-13 {
+.admin_description .jss13 {
   margin: 20px;
   width: 80%;
   background-color: rgb(255, 255, 255) !important;
 }
 
-.MuiPaper-elevation2-13 {
+.jss13 {
   margin: 10px;
   background-color: rgb(238, 238, 238) !important;
+}
+
+.site_content {
+
+  button {
+    margin-top: 20px;
+  }
+
+  &--input {
+  width: 90%;
+  }
 }
 
 .userAdmin__edit {
@@ -202,6 +212,45 @@ header .desktop {
   }
 }
 
-.MuiDrawer-paperAnchorRight-92 {
+.jss92 {
   background-color: rgb(255, 255, 255) !important;
+}
+
+.viewing {
+  color: #3f51b5 !important;
+}
+
+.complete {
+  color: green !important;
+}
+
+.module_content {
+  width: 100%;
+}
+
+.module_content {
+  width: 100%;
+
+  button {
+    margin-top: 20px;
+  }
+
+  &--input {
+  width: 90%;
+  }
+}
+
+.module_details {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.class_title {
+  margin-bottom: 0 !important;
+}
+
+.admin_description ul {
+  padding: 0;
+  margin: 0;
 }
