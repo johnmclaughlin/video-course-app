@@ -2,6 +2,10 @@
   "name": "scott_stolze",
   "version": "1.0.0",
   "description": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/johnmclaughlin/learn2lead"
+  },
   "main": "index.js",
   "scripts": {
     "build": "webpack",

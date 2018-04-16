@@ -106,24 +106,24 @@ export default class Header extends React.Component { // eslint-disable-line rea
           <CardContent>
             <Typography variant="display1" gutterBottom><i className="material-icons">supervisor_account</i> User Administration</Typography>
             <div className="admin_description">
-            <ul>
-                    <li>Create email link with unique key for new users</li>
-                  </ul>
+              <ul>
+                <li>Create email link with unique key for new users</li>
+              </ul>
 
-            {users.map((user, index) => (
-                    <Card key={index} className={user.role}>
-              <CardContent>
-                <div key={user.email}>
-                  <Typography variant="title" gutterBottom>{user.displayName}</Typography>
-                  <Typography variant="subheading" gutterBottom>{user.email}</Typography>
-                  <Typography variant="body1" gutterBottom>Start Date: {Moment(user.origDate, 'LLL').format('LLL')}</Typography>
-                  <Typography variant="body1" gutterBottom>Override Content Module: {Moment(user.startDate, 'LLL').format('LLL')}</Typography>
-                  <UserAdminInput onSubmit={this.handleSubmit} userName={user.displayName} userRole={user.role} userID={keys[index]} email={user.email} currentModule={(Math.floor(Moment.duration(Moment().startOf('day') - Moment(user.startDate, 'LLL')).asWeeks())) + 1} />
-                </div>
-              </CardContent>
-            </Card>
+              {users.map((user, index) => (
+                <Card key={index} className={user.role}>
+                  <CardContent>
+                    <div key={user.email}>
+                      <Typography variant="title" gutterBottom>{user.displayName}</Typography>
+                      <Typography variant="subheading" gutterBottom>{user.email}</Typography>
+                      <Typography variant="body1" gutterBottom>Start Date: {Moment(user.origDate, 'LLL').format('LLL')}</Typography>
+                      <Typography variant="body1" gutterBottom>Override Content Module: {Moment(user.startDate, 'LLL').format('LLL')}</Typography>
+                      <UserAdminInput onSubmit={this.handleSubmit} userName={user.displayName} userRole={user.role} userID={keys[index]} email={user.email} currentModule={(Math.floor(Moment.duration(Moment().startOf('day') - Moment(user.startDate, 'LLL')).asWeeks())) + 1} />
+                    </div>
+                  </CardContent>
+                </Card>
           ))}
-          </div>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -131,8 +131,10 @@ export default class Header extends React.Component { // eslint-disable-line rea
 
     const contentList = (
       <div>
-        <div className="admin__title">Content Administration</div>
-        <div className="admin_description">
+        <Card>
+          <CardContent>
+            <Typography variant="display1" gutterBottom><i className="material-icons">video_library</i> Content Administration</Typography>
+            <div className="admin_description">
           <ul>
             <li>Display all videos and their details</li>
             <li>Modify all videos and their details</li>
@@ -142,7 +144,7 @@ export default class Header extends React.Component { // eslint-disable-line rea
                   // convert object to array so we can use .map
                   const mods = Object.keys(lesson.modules).map(item => lesson.modules[item]);
                     return (
-                      <ExpansionPanel key ={lesson.title}>
+                      <ExpansionPanel key={lesson.title}>
                         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                           <Typography>{lesson.title}</Typography>
                         </ExpansionPanelSummary>
@@ -160,6 +162,8 @@ export default class Header extends React.Component { // eslint-disable-line rea
                 })}
           </ul>
         </div>
+          </CardContent>
+        </Card>
       </div>
     );
 
