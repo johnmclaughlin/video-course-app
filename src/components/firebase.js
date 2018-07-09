@@ -2,12 +2,12 @@ import firebase from 'firebase';
 
 // Initialize Firebase
 const config = {
-  apiKey: 'AIzaSyDiHxD6_fa-Ra5bAR6wGBAh7QZ0CDI7yq8',
-  authDomain: 'learn2lead-f1c18.firebaseapp.com',
-  databaseURL: 'https://learn2lead-f1c18.firebaseio.com',
-  projectId: 'learn2lead-f1c18',
-  storageBucket: 'learn2lead-f1c18.appspot.com',
-  messagingSenderId: '1035414128718',
+  apiKey: 'AIzaSyBlBjWjqV_WFWL3i9xqKknVLk4qoHXQA9c',
+  authDomain: 'video-course-app.firebaseapp.com',
+  databaseURL: 'https://video-course-app.firebaseio.com',
+  projectId: 'video-course-app',
+  storageBucket: 'video-course-app.appspot.com',
+  messagingSenderId: '839896101241',
 };
 firebase.initializeApp(config);
 export const provider = new firebase.auth.GoogleAuthProvider();

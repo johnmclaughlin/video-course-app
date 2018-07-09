@@ -1,6 +1,5 @@
 {
   "projects": {
-    "default": "learn2lead-f1c18",
-    "staging": "learn2lead-f1c18"
+    "default": "video-course-app"
   }
 }

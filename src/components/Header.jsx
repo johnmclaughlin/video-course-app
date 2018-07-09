@@ -70,7 +70,7 @@ export default class Header extends React.Component {
       });
     }
     if (currentModule) {
-      const newDate = Moment().startOf('day').subtract(currentModule, 'days').format('LLL');
+      const newDate = Moment().startOf('day').subtract(currentModule, 'weeks').format('LLL');
       updateUser.update({
         startDate: newDate,
       });
