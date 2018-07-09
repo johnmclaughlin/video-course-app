@@ -61,6 +61,7 @@ class App extends Component {  // eslint-disable-line
       allUsers: '',
       ryet: '',
       ryetMatch: 'ikyt6koacfaj3nsz2dkl',
+      ryetAdmin: 'nimdanamai',
       progress: '',
     };
     this.handleModule = this.handleModule.bind(this);
@@ -94,6 +95,22 @@ class App extends Component {  // eslint-disable-line
             startDate: Moment().startOf('day').format('LLL'),
             origDate: Moment().startOf('day').format('LLL'),
             role: 'user',
+            module: { temp: 'temp' },
+          });
+          const userWeek = 1;
+          const role = 'user';
+          this.setState({
+            userWeek,
+            role,
+            module: { w00m01: 'viewing' },
+          });
+        } else if (!snapshot.val() && this.state.ryet === this.state.ryetAdmin) {
+          usersRef.set({
+            email: user.email,
+            displayName: user.displayName,
+            startDate: Moment().startOf('day').format('LLL'),
+            origDate: Moment().startOf('day').format('LLL'),
+            role: 'admin',
             module: { temp: 'temp' },
           });
           const userWeek = 1;

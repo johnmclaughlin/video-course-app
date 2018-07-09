@@ -4,7 +4,7 @@
   "description": "",
   "repository": {
     "type": "git",
-    "url": "https://github.com/johnmclaughlin/learn2lead"
+    "url": "https://github.com/johnmclaughlin/video-course"
   },
   "main": "index.js",
   "scripts": {
